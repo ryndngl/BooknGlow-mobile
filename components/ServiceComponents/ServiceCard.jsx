@@ -21,13 +21,23 @@ export default function ServiceCard({
       <TouchableOpacity onPress={() => onImagePress(style.image || style.images?.[0])}>
         <View style={styles.imageWrapper}>
           <Image source={imageSource} style={styles.image} />
+          
+          {/* 🔥 SALE BADGE - Top Right Corner */}
+          {style.isOnSale && (
+            <View style={styles.saleBadge}>
+              <Text style={styles.saleBadgeText}>SALE</Text>
+            </View>
+          )}
         </View>
       </TouchableOpacity>
 
       <View style={styles.cardContent}>
         <View style={styles.namePriceRow}>
           <Text style={styles.styleName}>{style.name}</Text>
-          <Text style={styles.price}>
+          <Text style={[
+            styles.price,
+            style.isOnSale && styles.priceOnSale
+          ]}>
             {style.price?.toString().startsWith('₱') ? style.price : `₱${style.price}`}
           </Text>
         </View>
@@ -68,11 +78,33 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: 1,
     overflow: 'hidden',
+    position: 'relative',
   },
   image: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+  },
+  // 🔥 NEW: Sale Badge Styles
+  saleBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: '#FF6B35',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  saleBadgeText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: 'bold',
+    letterSpacing: 1,
   },
   cardContent: {
     padding: 14,
@@ -96,6 +128,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     color: '#d10000',
+  },
+  // 🔥 NEW: Orange price when on sale
+  priceOnSale: {
+    color: '#FF6B35',
   },
   description: {
     fontSize: 13,

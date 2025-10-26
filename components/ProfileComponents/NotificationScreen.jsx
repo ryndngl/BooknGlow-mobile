@@ -3,8 +3,10 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl, Ale
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { notificationService } from '../../services/notificationService';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 const NotificationScreen = () => {
+  const navigation = useNavigation();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -83,6 +85,24 @@ const NotificationScreen = () => {
     );
   };
 
+  // 🆕 NEW: Handle notification card press
+  const handleNotificationPress = (item) => {
+    if (item.type === 'service_sale') {
+      // Navigate to the specific service
+      navigation.navigate('Services', {
+        screen: 'ServiceDetail',
+        params: {
+          serviceName: item.serviceName,
+          highlightStyle: item.styleName,
+          category: item.categoryName
+        }
+      });
+    } else {
+      // For booking-related notifications, navigate to bookings
+      navigation.navigate('Bookings');
+    }
+  };
+
   const getNotificationIcon = (type) => {
     switch(type) {
       case 'booking_approved':
@@ -91,6 +111,8 @@ const NotificationScreen = () => {
         return { name: 'checkmark-done-circle', color: '#3498db' };
       case 'booking_cancelled':
         return { name: 'close-circle', color: '#e74c3c' };
+      case 'service_sale':
+        return { name: 'pricetag', color: '#FF6B35' };
       default:
         return { name: 'notifications', color: '#95a5a6' };
     }
@@ -100,7 +122,11 @@ const NotificationScreen = () => {
     const icon = getNotificationIcon(item.type);
     
     return (
-      <View style={styles.card}>
+      <TouchableOpacity 
+        style={styles.card}
+        onPress={() => handleNotificationPress(item)}
+        activeOpacity={0.7}
+      >
         <View style={[styles.iconContainer, { backgroundColor: `${icon.color}15` }]}>
           <Icon name={icon.name} size={24} color={icon.color} />
         </View>
@@ -108,6 +134,16 @@ const NotificationScreen = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.message}>{item.message}</Text>
+          
+          {/* 🆕 NEW: Show service details for sale notifications */}
+          {item.type === 'service_sale' && (
+            <View style={styles.saleInfoContainer}>
+              <Text style={styles.saleInfo}>
+                📍 {item.serviceName} → {item.categoryName} → {item.styleName}
+              </Text>
+            </View>
+          )}
+          
           <Text style={styles.date}>
             {new Date(item.createdAt).toLocaleDateString('en-US', {
               month: 'short',
@@ -121,11 +157,14 @@ const NotificationScreen = () => {
 
         <TouchableOpacity
           style={styles.deleteIconButton}
-          onPress={() => handleDeleteNotification(item._id)}
+          onPress={(e) => {
+            e.stopPropagation();
+            handleDeleteNotification(item._id);
+          }}
         >
           <Icon name="trash-outline" size={20} color="#95a5a6" />
         </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -160,7 +199,7 @@ const NotificationScreen = () => {
             <Icon name="notifications-off-outline" size={64} color="#ddd" />
             <Text style={styles.emptyTitle}>No notifications yet</Text>
             <Text style={styles.emptySubtitle}>
-              You'll see updates about your bookings here
+              You'll see updates about your bookings and special sales here
             </Text>
           </View>
         }
@@ -223,6 +262,19 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: 8,
   },
+  // 🆕 NEW: Sale info styles
+  saleInfoContainer: {
+    backgroundColor: '#FFF3E0',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+    marginBottom: 8,
+  },
+  saleInfo: {
+    fontSize: 12,
+    color: '#F57C00',
+    fontWeight: '500',
+  },
   date: {
     fontSize: 12,
     color: '#95a5a6',
@@ -247,6 +299,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#95a5a6',
     textAlign: 'center',
+    paddingHorizontal: 40,
   },
 });
 
