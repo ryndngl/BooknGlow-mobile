@@ -51,8 +51,6 @@ export const appointmentApi = {
       // Format date to YYYY-MM-DD
       const formattedDate = formatDateForBackend(date);
       
-      console.log('Fetching available slots for:', formattedDate);
-
       const response = await fetch(
         `${API_BASE_URL}${API_ENDPOINTS.GET_AVAILABLE_SLOTS}?date=${formattedDate}`,
         {
@@ -69,7 +67,6 @@ export const appointmentApi = {
         throw new Error(data.message || 'Failed to fetch available slots');
       }
 
-      console.log('Available slots fetched:', data);
       return {
         success: true,
         data: data.slots || {},
