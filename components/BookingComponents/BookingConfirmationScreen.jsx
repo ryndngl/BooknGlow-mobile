@@ -35,12 +35,13 @@ const BookingConfirmationScreen = () => {
     date,
     time,
     paymentMethod,
+    paymentProofUrl, // ✅ NEW: Get payment proof URL
     price,
     totalprice,
     status,
   } = bookingDetails || {};
 
-  // ✅ UPDATED: Handle final confirmation with conflict detection
+  // ✅ UPDATED: Include paymentProofUrl in appointment data
   const handleFinalConfirm = async () => {
     try {
       setIsLoading(true);
@@ -60,6 +61,7 @@ const BookingConfirmationScreen = () => {
         date: date,
         time: time,
         modeOfPayment: paymentMethod || "Cash on Service",
+        paymentProofUrl: paymentProofUrl || null, // ✅ Include payment proof URL
       };
 
       console.log("Creating appointment:", appointmentData);
@@ -78,6 +80,7 @@ const BookingConfirmationScreen = () => {
           date,
           time,
           paymentMethod,
+          paymentProofUrl, // ✅ Include in local data
           price,
           totalprice,
           status: "pending",
@@ -216,6 +219,16 @@ const BookingConfirmationScreen = () => {
               <Text style={styles.value}>{paymentMethod}</Text>
             </View>
 
+            {/* ✅ NEW: Show payment proof status */}
+            {paymentMethod === "GCash" && (
+              <View style={styles.row}>
+                <Text style={styles.label}>Payment Proof:</Text>
+                <Text style={[styles.value, styles.proofStatus]}>
+                  {paymentProofUrl ? "✓ Uploaded" : "Not uploaded"}
+                </Text>
+              </View>
+            )}
+
             <View style={styles.row}>
               <Text style={styles.label}>Price:</Text>
               <Text style={styles.value}>{price}</Text>
@@ -330,6 +343,10 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     color: "#222",
+  },
+  proofStatus: {
+    color: "#4CAF50",
+    fontWeight: "600",
   },
   proceedButton: {
     backgroundColor: "#4CAF50",
