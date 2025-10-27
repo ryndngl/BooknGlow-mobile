@@ -46,9 +46,9 @@ export default function TermsConditionsScreen({ navigation }) {
             <Text style={styles.sectionContent}>
               <Text style={styles.boldText}>Booking Confirmation:</Text> All appointments must be confirmed through the app or by phone. Appointments are not guaranteed until confirmed.
               {"\n\n"}
-              <Text style={styles.boldText}>Cancellation Policy:</Text> Cancellations must be made at least 24 hours before your scheduled appointment. Cancellations made less than 24 hours in advance may incur a cancellation fee.
+              <Text style={styles.boldText}>Cancellation Policy:</Text> Cancellations must be made at least 24 hours before your scheduled appointment.
               {"\n\n"}
-              <Text style={styles.boldText}>Late Arrivals:</Text> We can accommodate late arrivals up to 15 minutes. Beyond this time, we may need to reschedule your appointment.
+              <Text style={styles.boldText}>Late Arrivals:</Text> We can accommodate late arrivals up to 15 minutes. Beyond this time, If you're more than 15 minutes late, we may need to accommodate other clients.
               {"\n\n"}
               <Text style={styles.boldText}>No-Shows:</Text> Failure to show up for your appointment without prior cancellation may result in a no-show fee and could affect future booking privileges.
             </Text>
@@ -58,13 +58,9 @@ export default function TermsConditionsScreen({ navigation }) {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>3. Payment Terms</Text>
             <Text style={styles.sectionContent}>
-              <Text style={styles.boldText}>Payment Methods:</Text> We accept GCash, credit/debit cards, cash on service.
+              <Text style={styles.boldText}>Payment Methods:</Text> We accept GCash, cash on service.
               {"\n\n"}
               <Text style={styles.boldText}>Pricing:</Text> All prices are listed in Philippine Pesos (PHP) and are subject to change without notice.
-              {"\n\n"}
-              <Text style={styles.boldText}>Refunds:</Text> Refunds will be processed according to our cancellation policy. Processing time is 5-7 business days.
-              {"\n\n"}
-              <Text style={styles.boldText}>Deposits:</Text> Some services may require a deposit, which will be applied to your final bill.
             </Text>
           </View>
 
@@ -77,8 +73,6 @@ export default function TermsConditionsScreen({ navigation }) {
               <Text style={styles.boldText}>Service Results:</Text> Results may vary based on individual hair/skin type and condition. We cannot guarantee specific outcomes.
               {"\n\n"}
               <Text style={styles.boldText}>Product Reactions:</Text> While we use high-quality products, individual reactions may occur. Patch tests are recommended for color services.
-              {"\n\n"}
-              <Text style={styles.boldText}>Age Requirements:</Text> Minors under 16 must be accompanied by a parent or guardian for certain services.
             </Text>
           </View>
 
@@ -96,21 +90,7 @@ export default function TermsConditionsScreen({ navigation }) {
 
           {/* Section 6 */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>6. Loyalty Program</Text>
-            <Text style={styles.sectionContent}>
-              <Text style={styles.boldText}>Point Earning:</Text> Loyalty points are earned on completed services and are calculated based on the final bill amount.
-              {"\n\n"}
-              <Text style={styles.boldText}>Point Expiry:</Text> Points expire 2 years from the date earned. No extensions will be granted.
-              {"\n\n"}
-              <Text style={styles.boldText}>Redemption:</Text> Points can only be redeemed for services and cannot be exchanged for cash.
-              {"\n\n"}
-              <Text style={styles.boldText}>Program Changes:</Text> We reserve the right to modify or discontinue the loyalty program with 30 days' notice.
-            </Text>
-          </View>
-
-          {/* Section 7 */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>7. Prohibited Uses</Text>
+            <Text style={styles.sectionTitle}>6. Prohibited Uses</Text>
             <Text style={styles.sectionContent}>
               You may not use our app to:
               {"\n"}• Make fraudulent bookings or payments
@@ -122,41 +102,41 @@ export default function TermsConditionsScreen({ navigation }) {
             </Text>
           </View>
 
+          {/* Section 7*/}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>7. Limitation of Liability</Text>
+            <Text style={styles.sectionContent}>
+              Van's Glow Up Salon shall not be liable for any indirect, incidental, special, or consequential damages resulting from your use of our services. Our total liability shall not exceed the amount paid for the specific service in question.
+            </Text>
+          </View>
+
           {/* Section 8 */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>8. Limitation of Liability</Text>
+            <Text style={styles.sectionTitle}>8. Intellectual Property</Text>
             <Text style={styles.sectionContent}>
-              Salon Sarap shall not be liable for any indirect, incidental, special, or consequential damages resulting from your use of our services. Our total liability shall not exceed the amount paid for the specific service in question.
+              All content in the app, including but not limited to text, graphics, logos, and software, is the property of Van's Glow Up Salon and is protected by copyright and other intellectual property laws.
             </Text>
           </View>
 
           {/* Section 9 */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>9. Intellectual Property</Text>
-            <Text style={styles.sectionContent}>
-              All content in the app, including but not limited to text, graphics, logos, and software, is the property of Salon Sarap and is protected by copyright and other intellectual property laws.
-            </Text>
-          </View>
-
-          {/* Section 10 */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>10. Modifications to Terms</Text>
+            <Text style={styles.sectionTitle}>9. Modifications to Terms</Text>
             <Text style={styles.sectionContent}>
               We reserve the right to modify these Terms and Conditions at any time. Changes will be effective immediately upon posting in the app. Continued use of the app constitutes acceptance of the modified terms.
             </Text>
           </View>
 
-          {/* Section 11 */}
+          {/* Section 10 */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>11. Governing Law</Text>
+            <Text style={styles.sectionTitle}>10. Governing Law</Text>
             <Text style={styles.sectionContent}>
               These Terms and Conditions are governed by the laws of the Republic of the Philippines. Any disputes will be subject to the jurisdiction of the courts in Pampanga, Philippines.
             </Text>
           </View>
 
-          {/* Section 12 */}
+          {/* Section 11 */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>12. Contact Information</Text>
+            <Text style={styles.sectionTitle}>11. Contact Information</Text>
             <Text style={styles.sectionContent}>
               If you have any questions about these Terms and Conditions, please contact us:
               {"\n\n"}
@@ -171,7 +151,7 @@ export default function TermsConditionsScreen({ navigation }) {
           {/* Agreement Section */}
           <View style={styles.agreementSection}>
             <Text style={styles.agreementText}>
-              By using Van's Glow up Salon mobile application and services, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.
+              By using Van's Glow Up Salon mobile application and services, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.
             </Text>
           </View>
         </View>
