@@ -112,65 +112,6 @@ export default function ContactUsScreen({ navigation }) {
             </TouchableOpacity>
           ))}
         </View>
-
-        {/* Contact Form */}
-        <View style={styles.formSection}>
-          <Text style={styles.sectionTitle}>Send us a Message</Text>
-          <Text style={styles.sectionSubtitle}>
-            Fill out the form below and we'll get back to you as soon as possible.
-          </Text>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Full Name *</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Enter your full name"
-              value={formData.name}
-              onChangeText={(text) => setFormData({...formData, name: text})}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Email Address *</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Enter your email address"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={formData.email}
-              onChangeText={(text) => setFormData({...formData, email: text})}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Subject</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="What is this about?"
-              value={formData.subject}
-              onChangeText={(text) => setFormData({...formData, subject: text})}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Message *</Text>
-            <TextInput
-              style={[styles.textInput, styles.messageInput]}
-              placeholder="Please describe your question or concern..."
-              multiline
-              numberOfLines={5}
-              textAlignVertical="top"
-              value={formData.message}
-              onChangeText={(text) => setFormData({...formData, message: text})}
-            />
-          </View>
-
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Icon name="send" size={20} color="#fff" />
-            <Text style={styles.submitButtonText}>Send Message</Text>
-          </TouchableOpacity>
-        </View>
-
         {/* Business Hours */}
         <View style={styles.hoursSection}>
           <Text style={styles.sectionTitle}>Business Hours</Text>
@@ -330,51 +271,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
-  
-  // Form Section
-  formSection: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
-    marginTop: 16,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  inputLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
-    backgroundColor: '#fafafa',
-  },
-  messageInput: {
-    height: 120,
-  },
-  submitButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#4CAF50',
-    paddingVertical: 16,
-    borderRadius: 8,
-    marginTop: 10,
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 8,
-  },
-  
+    
   // Business Hours
   hoursSection: {
     backgroundColor: '#fff',
