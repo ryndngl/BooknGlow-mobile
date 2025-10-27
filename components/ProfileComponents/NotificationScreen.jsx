@@ -50,7 +50,6 @@ const NotificationScreen = () => {
       const userId = user._id || user.id;
 
       await notificationService.markAllAsRead(userId);
-      console.log('✅ All notifications marked as read');
     } catch (error) {
       console.error('Mark all as read error:', error);
     }
@@ -85,24 +84,6 @@ const NotificationScreen = () => {
     );
   };
 
-  // 🆕 NEW: Handle notification card press
-  const handleNotificationPress = (item) => {
-    if (item.type === 'service_sale') {
-      // Navigate to the specific service
-      navigation.navigate('Services', {
-        screen: 'ServiceDetail',
-        params: {
-          serviceName: item.serviceName,
-          highlightStyle: item.styleName,
-          category: item.categoryName
-        }
-      });
-    } else {
-      // For booking-related notifications, navigate to bookings
-      navigation.navigate('Bookings');
-    }
-  };
-
   const getNotificationIcon = (type) => {
     switch(type) {
       case 'booking_approved':
@@ -124,7 +105,6 @@ const NotificationScreen = () => {
     return (
       <TouchableOpacity 
         style={styles.card}
-        onPress={() => handleNotificationPress(item)}
         activeOpacity={0.7}
       >
         <View style={[styles.iconContainer, { backgroundColor: `${icon.color}15` }]}>
@@ -134,16 +114,8 @@ const NotificationScreen = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.message}>{item.message}</Text>
-          
-          {/* 🆕 NEW: Show service details for sale notifications */}
-          {item.type === 'service_sale' && (
-            <View style={styles.saleInfoContainer}>
-              <Text style={styles.saleInfo}>
-                📍 {item.serviceName} → {item.categoryName} → {item.styleName}
-              </Text>
-            </View>
-          )}
-          
+       
+     
           <Text style={styles.date}>
             {new Date(item.createdAt).toLocaleDateString('en-US', {
               month: 'short',
@@ -233,11 +205,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 2,
   },
   iconContainer: {
     width: 48,
@@ -262,14 +229,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: 8,
   },
-  // 🆕 NEW: Sale info styles
-  saleInfoContainer: {
-    backgroundColor: '#FFF3E0',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 6,
-    marginBottom: 8,
-  },
+  
   saleInfo: {
     fontSize: 12,
     color: '#F57C00',

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useFavorites } from '../context/FavoritesContext';
 import { extractImages } from '../utils/imageHelper';
-import { servicesAPI } from '../services/servicesAPI'; // ✅ ADD THIS
+import { servicesAPI } from '../services/servicesAPI';
 
 export const useServiceDetail = () => {
   const route = useRoute();
@@ -16,7 +16,7 @@ export const useServiceDetail = () => {
   const [service, setService] = useState(passedService || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [refreshing, setRefreshing] = useState(false); // ✅ ADD THIS
+  const [refreshing, setRefreshing] = useState(false);
 
   // Service type detection
   const isHairCut = service?.name?.trim().toLowerCase() === 'hair cut';
@@ -33,16 +33,16 @@ export const useServiceDetail = () => {
   const [imageViewerVisible, setImageViewerVisible] = useState(false);
   const [viewerImageSource, setViewerImageSource] = useState(null);
 
- //  NEW CODE - Only set category on INITIAL mount, not on refresh
-useEffect(() => {
-  // Only set default category if there's no selected category yet
-  if (service && !selectedCategory) {
-    const newCategory = isHairCut ? 'Men' : (isHairColor ? 'Root Touch Up' : null);
-    setSelectedCategory(newCategory);
-  }
-}, [service?.name]); // Only trigger when service NAME changes, not the whole object
+  // Only set category on INITIAL mount, not on refresh
+  useEffect(() => {
+    // Only set default category if there's no selected category yet
+    if (service && !selectedCategory) {
+      const newCategory = isHairCut ? 'Men' : (isHairColor ? 'Root Touch Up' : null);
+      setSelectedCategory(newCategory);
+    }
+  }, [service?.name]); // Only trigger when service NAME changes
 
-  // ADD THIS - Refresh function
+  // Refresh function
   const onRefresh = async () => {
     if (!service?.name) return;
     
@@ -59,20 +59,40 @@ useEffect(() => {
     }
   };
 
-  // Filter styles based on category AND isActive status
-  const filteredStyles = service?.styles?.filter((style) => {
-    // Filter out disabled styles (hide them in mobile app)
-    if (style.isActive === false) {
-      return false;
+  // ✅ FIXED - Filter styles from NEW category structure
+  const filteredStyles = (() => {
+    if (!service || !service.categories) {
+      return [];
     }
-    
-    // Filter by category for Hair Cut and Hair Color
+
+
+    // For services with category filtering (Hair Cut, Hair Color)
     if (isHairCut || isHairColor) {
-      return style.category === selectedCategory;
+      if (!selectedCategory) {
+        return [];
+      }
+
+      // Find the selected category
+      const category = service.categories.find(
+        cat => cat.name.toLowerCase() === selectedCategory.toLowerCase()
+      );
+
+      if (!category) {
+        return [];
+      }
+
+
+      // Return active styles from that category
+      return (category.styles || []).filter(style => style.isActive !== false);
     }
-    
-    return true;
-  }) || [];
+
+    // For services without category filtering (Foot Spa, etc.)
+    // Return all active styles from all categories
+    const allStyles = service.categories.flatMap(category => 
+      (category.styles || []).filter(style => style.isActive !== false)
+    );
+    return allStyles;
+  })();
 
   // Image viewer handlers
   const openImageViewer = (image) => {
@@ -147,7 +167,7 @@ useEffect(() => {
     openImageViewer,
     closeImageViewer,
     
-    // ADD THIS - Refresh state
+    // Refresh state
     refreshing,
     onRefresh,
     

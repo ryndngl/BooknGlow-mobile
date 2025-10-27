@@ -44,7 +44,6 @@ const HomeScreen = () => {
       const unread = data.filter(n => !n.isRead).length;
       setUnreadCount(unread);
       
-      console.log('📬 Unread notifications:', unread);
     } catch (error) {
       console.error('Fetch unread count error:', error);
     }
@@ -56,7 +55,6 @@ const HomeScreen = () => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log('🔄 HomeScreen focused - refreshing badge count');
       fetchUnreadCount();
     });
 

@@ -24,7 +24,6 @@ export class FavoritesMigrationHelper {
       const globalFavorites = await AsyncStorage.getItem('favorites');
       
       if (!globalFavorites) {
-        console.log('No global favorites to migrate');
         return false;
       }
 

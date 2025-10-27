@@ -51,10 +51,8 @@ export const FavoritesProvider = ({ children }) => {
           await AsyncStorage.setItem(favoritesKey, JSON.stringify(cleaned));
         }
         setFavorites(cleaned);
-        console.log(`Loaded ${cleaned.length} favorites for user:`, user?.email || user?.fullName);
       } else {
         setFavorites([]);
-        console.log(`No favorites found for user:`, user?.email || user?.fullName);
       }
     } catch (error) {
       console.error("Favorites load error:", error);
@@ -68,18 +66,15 @@ export const FavoritesProvider = ({ children }) => {
   const saveFavorites = async (favoritesData) => {
     try {
       if (!isAuthenticated || !user) {
-        console.log('User not authenticated, cannot save favorites');
         return false;
       }
 
       const favoritesKey = getFavoritesKey();
       if (!favoritesKey) {
-        console.log('No favorites key, cannot save');
         return false;
       }
 
       await AsyncStorage.setItem(favoritesKey, JSON.stringify(favoritesData));
-      console.log(`Saved ${favoritesData.length} favorites for user:`, user?.email || user?.fullName);
       return true;
     } catch (error) {
       console.error("Favorites save error:", error);
@@ -90,10 +85,8 @@ export const FavoritesProvider = ({ children }) => {
   // Load favorites when user authentication status changes
   useEffect(() => {
     if (isAuthenticated && user && (user.id || user._id)) {
-      console.log('User authenticated, loading favorites...');
       loadFavorites(true); // Force reload when user changes
     } else if (!isAuthenticated) {
-      console.log('User not authenticated, clearing favorites...');
       setFavorites([]);
     }
   }, [isAuthenticated, user?.id, user?._id, user?.email]);
@@ -129,7 +122,6 @@ export const FavoritesProvider = ({ children }) => {
         if (existingIndex >= 0) {
           // Remove from favorites
           updatedFavorites = prev.filter((_, index) => index !== existingIndex);
-          console.log(`Removed ${service.name} - ${style.name} from favorites`);
         } else {
           // Add to favorites with proper structure
           const favoriteItem = {

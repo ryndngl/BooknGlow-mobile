@@ -83,7 +83,6 @@ export const notificationService = {
       }
 
       const result = await response.json();
-      console.log('✅ All notifications marked as read:', result);
       return { success: true };
 
     } catch (error) {

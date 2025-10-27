@@ -13,7 +13,6 @@ export const BookingProvider = ({ children }) => {
   useEffect(() => {
     const loadUserBookings = async () => {
       if (isAuthenticated && user?.id) {
-        console.log(' Auto-fetching bookings for logged-in user...');
         await fetchUserBookings(user.id);
       } else {
         setBookings([]);
@@ -26,7 +25,6 @@ export const BookingProvider = ({ children }) => {
   const fetchUserBookings = async (userId) => {
     try {
       setIsLoadingBookings(true);
-      console.log(' Fetching bookings for user:', userId);
       
       const response = await fetch(`${API_URL}/api/appointments/user/${userId}`);
       const data = await response.json();
@@ -59,8 +57,6 @@ export const BookingProvider = ({ children }) => {
         });
 
         setBookings(transformedBookings);
-        console.log(` Loaded ${transformedBookings.length} bookings`);
-        console.log(' Sample booking:', transformedBookings[0]);
         return { success: true, count: transformedBookings.length };
       } else {
         console.log(' No bookings found');

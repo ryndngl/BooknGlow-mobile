@@ -323,13 +323,10 @@ const AppContent = () => {
         <NavigationContainer
           linking={linking}
           onReady={() => {
-            console.log("Navigation is ready!");
           }}
           onStateChange={(state) => {
-            console.log("Navigation state changed");
             if (state) {
               const currentRoute = state.routes[state.index];
-              console.log("Current route:", currentRoute.name);
               if (currentRoute.params) {
               }
             }
