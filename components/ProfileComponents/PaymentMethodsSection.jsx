@@ -8,8 +8,6 @@ export default function PaymentMethodsSection({ paymentMethods }) {
   };
 
   const handleSelectPaymentMethod = (method) => {
-    // TODO: Implement payment method selection
-    console.log("Selected payment method:", method);
   };
 
   return (

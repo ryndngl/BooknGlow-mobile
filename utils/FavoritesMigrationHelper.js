@@ -16,7 +16,6 @@ export class FavoritesMigrationHelper {
       const existingUserFavorites = await AsyncStorage.getItem(userFavoritesKey);
       
       if (existingUserFavorites) {
-        console.log('User already has favorites, skipping migration');
         return false;
       }
 
