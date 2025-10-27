@@ -39,18 +39,7 @@ export default function PrivacyPolicyScreen({ navigation }) {
             <Text style={styles.sectionContent}>
               • Full name and contact details (phone, email)
               {"\n"}• Profile photo (optional)
-              {"\n"}• Date of birth for birthday promotions
-              {"\n"}• Payment information (processed securely)
               {"\n"}• Service preferences and history
-            </Text>
-
-            <Text style={styles.subsectionTitle}>Automatically Collected Information:</Text>
-            <Text style={styles.sectionContent}>
-              • Device information (model, operating system)
-              {"\n"}• App usage data and analytics
-              {"\n"}• Location data (when permitted)
-              {"\n"}• IP address and network information
-              {"\n"}• Crash reports and performance data
             </Text>
           </View>
 
@@ -62,7 +51,6 @@ export default function PrivacyPolicyScreen({ navigation }) {
               {"\n"}• Process and manage your appointments
               {"\n"}• Send booking confirmations and reminders
               {"\n"}• Process payments and maintain records
-              {"\n"}• Provide customer support
               {"\n\n"}
               <Text style={styles.boldText}>Communication:</Text>
               {"\n"}• Send promotional offers and updates (with consent)
@@ -78,29 +66,7 @@ export default function PrivacyPolicyScreen({ navigation }) {
 
           {/* Section 3 */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>3. Information Sharing</Text>
-            <Text style={styles.sectionContent}>
-              <Text style={styles.boldText}>We do not sell your personal information.</Text> We may share your data only in these circumstances:
-              {"\n\n"}
-              <Text style={styles.boldText}>Service Providers:</Text>
-              {"\n"}• Payment processors (GCash, credit card companies)
-              {"\n"}• Cloud storage providers
-              {"\n"}• Analytics services (anonymized data only)
-              {"\n\n"}
-              <Text style={styles.boldText}>Legal Requirements:</Text>
-              {"\n"}• When required by Philippine law
-              {"\n"}• To protect our rights and safety
-              {"\n"}• In case of business transfer or merger
-              {"\n\n"}
-              <Text style={styles.boldText}>With Your Consent:</Text>
-              {"\n"}• Sharing reviews and photos (when you choose to)
-              {"\n"}• Social media integration (if enabled)
-            </Text>
-          </View>
-
-          {/* Section 4 */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>4. Data Security</Text>
+            <Text style={styles.sectionTitle}>3. Data Security</Text>
             <Text style={styles.sectionContent}>
               We implement industry-standard security measures to protect your information:
               {"\n\n"}
@@ -114,9 +80,9 @@ export default function PrivacyPolicyScreen({ navigation }) {
             </Text>
           </View>
 
-          {/* Section 5 */}
+          {/* Section 4 */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>5. Data Retention</Text>
+            <Text style={styles.sectionTitle}>4. Data Retention</Text>
             <Text style={styles.sectionContent}>
               <Text style={styles.boldText}>Account Data:</Text> Retained while your account is active
               {"\n"}
@@ -130,96 +96,9 @@ export default function PrivacyPolicyScreen({ navigation }) {
             </Text>
           </View>
 
-          {/* Section 6 */}
+          {/* Section 5 */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>6. Your Rights and Choices</Text>
-            <Text style={styles.sectionContent}>
-              Under the Data Privacy Act of 2012, you have the right to:
-              {"\n\n"}
-              <Text style={styles.boldText}>Access:</Text> Request a copy of your personal data
-              {"\n"}
-              <Text style={styles.boldText}>Correction:</Text> Update or correct inaccurate information
-              {"\n"}
-              <Text style={styles.boldText}>Deletion:</Text> Request deletion of your data
-              {"\n"}
-              <Text style={styles.boldText}>Portability:</Text> Receive your data in a common format
-              {"\n"}
-              <Text style={styles.boldText}>Object:</Text> Opt out of marketing communications
-              {"\n"}
-              <Text style={styles.boldText}>Restrict:</Text> Limit how we process your data
-              {"\n\n"}
-              To exercise these rights, contact us at privacy@salonsarap.com
-            </Text>
-          </View>
-
-          {/* Section 7 */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>7. Cookies and Tracking</Text>
-            <Text style={styles.sectionContent}>
-              Our app may use cookies and similar technologies to:
-              {"\n\n"}
-              • Remember your preferences and settings
-              {"\n"}• Analyze app performance and usage
-              {"\n"}• Provide personalized content
-              {"\n"}• Enable social media features
-              {"\n\n"}
-              You can control cookie settings through your device settings, but disabling them may affect app functionality.
-            </Text>
-          </View>
-
-          {/* Section 8 */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>8. Third-Party Services</Text>
-            <Text style={styles.sectionContent}>
-              Our app may integrate with third-party services:
-              {"\n\n"}
-              <Text style={styles.boldText}>Social Media Login:</Text> Google, Facebook (optional)
-              {"\n"}
-              <Text style={styles.boldText}>Payment Processors:</Text> GCash, PayPal, Stripe
-              {"\n"}
-              <Text style={styles.boldText}>Analytics:</Text> Google Analytics, Firebase
-              {"\n"}
-              <Text style={styles.boldText}>Maps:</Text> Google Maps for location services
-              {"\n\n"}
-              These services have their own privacy policies. We encourage you to review them.
-            </Text>
-          </View>
-
-          {/* Section 9 */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>9. Children's Privacy</Text>
-            <Text style={styles.sectionContent}>
-              Our app is not intended for children under 13. We do not knowingly collect personal information from children under 13. If we discover we have collected such information, we will delete it immediately.
-              {"\n\n"}
-              For users aged 13-17, parental consent may be required for certain services.
-            </Text>
-          </View>
-
-          {/* Section 10 */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>10. International Data Transfers</Text>
-            <Text style={styles.sectionContent}>
-              Your data may be processed in countries other than the Philippines for cloud storage and analytics purposes. We ensure appropriate safeguards are in place to protect your data during international transfers.
-            </Text>
-          </View>
-
-          {/* Section 11 */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>11. Changes to This Policy</Text>
-            <Text style={styles.sectionContent}>
-              We may update this Privacy Policy periodically to reflect changes in our practices or applicable laws. We will:
-              {"\n\n"}
-              • Notify you through the app or email
-              {"\n"}• Post the updated policy with the revision date
-              {"\n"}• Give you time to review changes before they take effect
-              {"\n\n"}
-              Continued use of the app after changes constitutes acceptance of the updated policy.
-            </Text>
-          </View>
-
-          {/* Section 12 */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>12. Contact Us</Text>
+            <Text style={styles.sectionTitle}>5. Contact Us</Text>
             <Text style={styles.sectionContent}>
               For questions about this Privacy Policy or your personal data:
               {"\n\n"}
