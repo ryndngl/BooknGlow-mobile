@@ -9,8 +9,6 @@ import ProfileHeader from "./ProfileHeader";
 import ProfileCard from "./ProfileCard";
 import FavoritesSection from "./FavoritesSection";
 import PastBookingsSection from "./PastBookingsSection";
-// import PaymentMethodsSection from "./PaymentMethodsSection";
-// import LoyaltySection from "./LoyaltySection";
 import LogoutSection from "./LogoutSection";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 import LogoutSuccessModal from "./LogoutSuccessModal";
@@ -60,14 +58,6 @@ export default function ProfileScreen() {
     { service: "Soft Gel", date: "Jan 10, 2025" },
     { service: "Hair Color", date: "Dec 28, 2024" },
   ];
-
-  const paymentMethods = [
-    { name: "GCash", isDefault: true },
-    { name: "Credit/Debit Card", isDefault: false },
-    { name: "Cash on Service", isDefault: false },
-  ];
-
-  const loyaltyPoints = 150;
 
   return (
     <>
