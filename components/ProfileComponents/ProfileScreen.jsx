@@ -3,13 +3,14 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useFavorites } from "../../context/FavoritesContext";
 import { useAuth } from "../../context/AuthContext";
+
 // Components - same level lang kayo sa ProfileComponents folder
 import ProfileHeader from "./ProfileHeader";
 import ProfileCard from "./ProfileCard";
 import FavoritesSection from "./FavoritesSection";
 import PastBookingsSection from "./PastBookingsSection";
-import PaymentMethodsSection from "./PaymentMethodsSection";
-import LoyaltySection from "./LoyaltySection";
+// import PaymentMethodsSection from "./PaymentMethodsSection";
+// import LoyaltySection from "./LoyaltySection";
 import LogoutSection from "./LogoutSection";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 import LogoutSuccessModal from "./LogoutSuccessModal";
@@ -95,10 +96,6 @@ export default function ProfileScreen() {
             />
 
             <PastBookingsSection bookings={pastBookings} />
-
-            <PaymentMethodsSection paymentMethods={paymentMethods} />
-
-            <LoyaltySection loyaltyPoints={loyaltyPoints} />
 
             <LogoutSection onLogoutPress={confirmLogout} />
           </View>
