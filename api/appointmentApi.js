@@ -93,8 +93,7 @@ export const appointmentApi = {
    */
   createAppointment: async (appointmentData) => {
     try {
-      console.log('Creating appointment (raw data):', appointmentData);
-
+  
       // ✅ FIX: Format data before sending to backend
       const formattedData = {
         ...appointmentData,
@@ -106,8 +105,6 @@ export const appointmentApi = {
           price: cleanPrice(service.price)
         }))
       };
-
-      console.log('Creating appointment (formatted data):', formattedData);
 
       const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.CREATE_APPOINTMENT}`, {
         method: 'POST',
@@ -132,8 +129,6 @@ export const appointmentApi = {
       if (!response.ok) {
         throw new Error(data.message || 'Failed to create appointment');
       }
-
-      console.log('Appointment created successfully:', data);
       return {
         success: true,
         data: data.data,
