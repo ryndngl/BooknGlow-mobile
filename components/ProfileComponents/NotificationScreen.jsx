@@ -73,7 +73,6 @@ const NotificationScreen = () => {
             try {
               await notificationService.deleteNotification(notificationId);
               setNotifications(prev => prev.filter(n => n._id !== notificationId));
-              console.log('✅ Notification deleted');
             } catch (error) {
               console.error('Delete notification error:', error);
               Alert.alert('Error', 'Failed to delete notification');
