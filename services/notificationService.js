@@ -60,7 +60,6 @@ export const notificationService = {
       }
 
       const result = await response.json();
-      console.log('✅ Notification deleted:', result);
       return { success: true };
 
     } catch (error) {
