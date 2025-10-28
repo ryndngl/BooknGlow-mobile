@@ -33,7 +33,6 @@ export class FavoritesMigrationHelper {
       );
 
       if (validFavorites.length === 0) {
-        console.log('No valid favorites to migrate');
         return false;
       }
 
