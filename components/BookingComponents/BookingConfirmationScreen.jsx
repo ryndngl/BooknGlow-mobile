@@ -64,7 +64,6 @@ const BookingConfirmationScreen = () => {
         paymentProofUrl: paymentProofUrl || null, // ✅ Include payment proof URL
       };
 
-      console.log("Creating appointment:", appointmentData);
 
       // ✅ Call API to create appointment
       const response = await appointmentApi.createAppointment(appointmentData);
