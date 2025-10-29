@@ -3,7 +3,12 @@ import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-export function useProfileData(authUser, isAuthenticated, updateUser, refreshFavorites) {
+export function useProfileData(
+  authUser,
+  isAuthenticated,
+  updateUser,
+  refreshFavorites
+) {
   const [user, setUser] = useState({
     _id: null,
     fullName: "",
@@ -56,7 +61,7 @@ export function useProfileData(authUser, isAuthenticated, updateUser, refreshFav
 
             if (storedToken) {
               const response = await axios.get(
-                `http://192.168.100.6:5000/api/users/${userId}`,
+                `http://https://salon-app-server.onrender.com:5000/api/users/${userId}`,
                 {
                   headers: { Authorization: `Bearer ${storedToken}` },
                   timeout: 5000,

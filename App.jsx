@@ -32,20 +32,20 @@ import {
   GetStartedScreen,
   ForgotPasswordScreen,
   ResetPasswordScreen,
-  
+
   // Service Components
   ServicesScreen,
   ServiceDetailScreen,
-  
+
   // Booking Components
   BookingFormScreen,
   BookingSummaryScreen,
   BookingConfirmationScreen,
   BookingScreen,
-  
+
   // Payment Components
   PaymentMethodScreen,
-  
+
   // Profile Components
   FavoritesScreen,
   NotificationScreen,
@@ -53,7 +53,7 @@ import {
   ProfileScreen,
   TermsConditionsScreen,
   PrivacyPolicyScreen,
-  
+
   // Support Components
   FAQScreen,
   ContactUsScreen,
@@ -72,8 +72,8 @@ const { width, height } = Dimensions.get("window");
 const linking = {
   prefixes: [
     "salonmobileapp://",
-    "exp://192.168.100.6:19000/--/",
-    "http://192.168.100.6:5000/",
+    "exp://https://salon-app-server.onrender.com:19000/--/",
+    "http://https://salon-app-server.onrender.com:5000/",
   ],
   config: {
     screens: {
@@ -130,8 +130,7 @@ const AuthNavigator = () => {
       }
     };
 
-    const handleDeepLink = (event) => {
-    };
+    const handleDeepLink = (event) => {};
 
     handleInitialURL();
 
@@ -185,63 +184,67 @@ const AuthNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName={
-        isAuthenticated ? "MainTabs" : isFirstTime ? "GetStarted" : "LoginScreen"
+        isAuthenticated
+          ? "MainTabs"
+          : isFirstTime
+          ? "GetStarted"
+          : "LoginScreen"
       }
       screenOptions={{
         headerShown: false,
       }}
     >
-      <Stack.Screen 
-        name="GetStarted" 
-        component={GetStartedScreen} 
+      <Stack.Screen
+        name="GetStarted"
+        component={GetStartedScreen}
         options={{ animation: "fade" }}
       />
-      <Stack.Screen 
-        name="LoginScreen" 
+      <Stack.Screen
+        name="LoginScreen"
         component={LoginScreen}
         options={{ animation: "none" }}
       />
-      <Stack.Screen 
-        name="Register" 
+      <Stack.Screen
+        name="Register"
         component={RegisterScreen}
         options={{ animation: "fade" }}
       />
-      
-      <Stack.Screen 
-        name="ForgotPasswordScreen" 
+
+      <Stack.Screen
+        name="ForgotPasswordScreen"
         component={ForgotPasswordScreen}
         options={{
           title: "Forgot Password",
           animation: "fade",
         }}
       />
-      <Stack.Screen 
-        name="ResetPasswordScreen" 
+      <Stack.Screen
+        name="ResetPasswordScreen"
         component={ResetPasswordScreen}
         options={{
           title: "Reset Password",
           animation: "fade",
         }}
       />
-      
-      <Stack.Screen 
-        name="FAQs" 
-        component={FAQScreen} 
+
+      <Stack.Screen
+        name="FAQs"
+        component={FAQScreen}
         options={{ animation: "fade" }}
       />
-      <Stack.Screen 
-        name="ContactUs" 
-        component={ContactUsScreen} 
+      <Stack.Screen
+        name="ContactUs"
+        component={ContactUsScreen}
         options={{ animation: "fade" }}
       />
-      <Stack.Screen 
-        name="TermsConditions" 
-        component={TermsConditionsScreen} 
+      <Stack.Screen
+        name="TermsConditions"
+        component={TermsConditionsScreen}
         options={{ animation: "fade" }}
       />
-      <Stack.Screen 
-        name="PrivacyPolicy" 
-        component={PrivacyPolicyScreen} 
+      <Stack.Screen
+        name="PrivacyPolicy"
+        component={PrivacyPolicyScreen}
         options={{ animation: "fade" }}
       />
 
@@ -279,10 +282,10 @@ const AuthNavigator = () => {
           <Stack.Screen name="FavoritesScreen" component={FavoritesScreen} />
           <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-          
+
           {/* NEW: Past Bookings Screen */}
-          <Stack.Screen 
-            name="PastBookingsScreen" 
+          <Stack.Screen
+            name="PastBookingsScreen"
             component={PastBookingsScreen}
             options={{ headerShown: false }}
           />
@@ -329,8 +332,7 @@ const AppContent = () => {
       <FavoritesProvider>
         <NavigationContainer
           linking={linking}
-          onReady={() => {
-          }}
+          onReady={() => {}}
           onStateChange={(state) => {
             if (state) {
               const currentRoute = state.routes[state.index];
@@ -341,7 +343,6 @@ const AppContent = () => {
         >
           <AuthNavigator />
           <StatusBar style="dark" />
-        
         </NavigationContainer>
       </FavoritesProvider>
     </BookingProvider>
