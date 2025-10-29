@@ -1,38 +1,28 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { useBooking } from "../../context/BookingContext";
 
-export default function PastBookingsSection({ bookings }) {
-  const handleBookAgain = (booking) => {
-    // TODO: Implement book again functionality
-    console.log("Book again:", booking);
-  };
+export default function PastBookingsSection({ onPress }) {
+  const { bookings } = useBooking();
+
+  // Count completed bookings
+  const completedCount = bookings.filter(
+    (booking) => booking.status === "completed"
+  ).length;
 
   return (
     <View style={styles.menuSection}>
       <Text style={styles.sectionTitle}>Past Bookings</Text>
-      {bookings.map((booking, index) => (
-        <View key={index}>
-          <View style={styles.menuItem}>
-            <View style={styles.menuItemLeft}>
-              <Icon name="history" size={20} color="#666" />
-              <View style={styles.menuItemContent}>
-                <Text style={styles.menuItemText}>
-                  {booking.service} - {booking.date}
-                </Text>
-              </View>
-            </View>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => handleBookAgain(booking)}
-            >
-              <Text style={styles.actionText}>Book Again</Text>
-            </TouchableOpacity>
+      <TouchableOpacity style={styles.menuItem} onPress={onPress}>
+        <View style={styles.menuItemLeft}>
+          <Icon name="history" size={20} color="#666" />
+          <View style={styles.menuItemContent}>
+            <Text style={styles.menuItemText}>View All Past Bookings</Text>
+            <Text style={styles.countText}>({completedCount})</Text>
           </View>
-          {index < bookings.length - 1 && (
-            <View style={styles.menuDivider} />
-          )}
         </View>
-      ))}
+        <Icon name="chevron-right" size={24} color="#999" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -67,25 +57,16 @@ const styles = StyleSheet.create({
   menuItemContent: {
     marginLeft: 12,
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
   menuItemText: {
     fontSize: 16,
     color: "#333",
+    marginRight: 6,
   },
-  actionButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: "#4CAF50",
-    borderRadius: 6,
-  },
-  actionText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  menuDivider: {
-    height: 1,
-    backgroundColor: "#f0f0f0",
-    marginLeft: 48,
+  countText: {
+    fontSize: 16,
+    color: "#666",
   },
 });
