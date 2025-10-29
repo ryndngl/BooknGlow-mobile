@@ -59,6 +59,9 @@ import {
   ContactUsScreen,
 } from "./components";
 
+// NEW: Import PastBookingsScreen
+import PastBookingsScreen from "./components/ProfileComponents/PastBookingsScreen";
+
 // Top-level Navigators
 import BottomTabNavigator from "./navigation/BottomTabNavigator";
 
@@ -279,6 +282,13 @@ const AuthNavigator = () => {
           <Stack.Screen name="FavoritesScreen" component={FavoritesScreen} />
           <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+          
+          {/* NEW: Past Bookings Screen */}
+          <Stack.Screen 
+            name="PastBookingsScreen" 
+            component={PastBookingsScreen}
+            options={{ headerShown: false }}
+          />
         </>
       )}
     </Stack.Navigator>
