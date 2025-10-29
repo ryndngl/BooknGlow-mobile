@@ -1,7 +1,7 @@
 // services/appointmentService.js
 
 // ✅ Use your PC's IP address
-const API_BASE_URL = "http://https://salon-app-server.onrender.com:5000/api"; // Replace with your IP
+const API_BASE_URL = "https://salon-app-server.onrender.com/api"; // Replace with your IP
 // const API_BASE_URL = 'http://10.0.2.2:5000/api'; // For Android emulator
 
 export const appointmentService = {

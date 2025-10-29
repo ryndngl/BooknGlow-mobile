@@ -20,7 +20,7 @@ export function usePhoneEditor(user, setUser, updateUser) {
       const storedToken = await AsyncStorage.getItem("token");
       if (storedToken && user._id) {
         await axios.put(
-          `http://https://salon-app-server.onrender.com:5000/api/users/${user._id}`,
+          `https://salon-app-server.onrender.com/api/users/${user._id}`,
           { phone: user.phone },
           {
             headers: { Authorization: `Bearer ${storedToken}` },

@@ -1,5 +1,5 @@
 // API Base URL
-export const API_BASE_URL = "http://https://salon-app-server.onrender.com:5000";
+export const API_BASE_URL = "https://salon-app-server.onrender.com";
 
 // API Endpoints
 export const API_ENDPOINTS = {

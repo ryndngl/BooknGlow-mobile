@@ -61,10 +61,10 @@ export function useProfileData(
 
             if (storedToken) {
               const response = await axios.get(
-                `http://https://salon-app-server.onrender.com:5000/api/users/${userId}`,
+                `https://salon-app-server.onrender.com/api/users/${userId}`,
                 {
                   headers: { Authorization: `Bearer ${storedToken}` },
-                  timeout: 5000,
+                  timeout: 10000,
                 }
               );
 

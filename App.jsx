@@ -6,6 +6,9 @@ import {
   ImageBackground,
   StatusBar,
   LogBox,
+  View,
+  Text,
+  ActivityIndicator,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as Linking from "expo-linking";
@@ -68,12 +71,12 @@ import BottomTabNavigator from "./navigation/BottomTabNavigator";
 const Stack = createNativeStackNavigator();
 const { width, height } = Dimensions.get("window");
 
-// Deep linking configuration for password reset
+// ✅ FIXED: Removed :19000 port
 const linking = {
   prefixes: [
     "salonmobileapp://",
-    "exp://https://salon-app-server.onrender.com:19000/--/",
-    "http://https://salon-app-server.onrender.com:5000/",
+    "exp://https://salon-app-server.onrender.com/--/",
+    "https://salon-app-server.onrender.com/",
   ],
   config: {
     screens: {
@@ -106,6 +109,28 @@ const linking = {
   },
 };
 
+// ✅ NEW: Server Wake-up Function
+const wakeUpServer = async () => {
+  const API_URL = "https://salon-app-server.onrender.com";
+  try {
+    console.log("🚀 Waking up server...");
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+    
+    const response = await fetch(`${API_URL}/api/health`, {
+      method: "GET",
+      signal: controller.signal,
+    });
+    
+    clearTimeout(timeoutId);
+    console.log("✅ Server is awake:", response.ok);
+    return true;
+  } catch (error) {
+    console.log("⏳ Server is starting up...");
+    return false;
+  }
+};
+
 // Auth Navigator Component
 const AuthNavigator = () => {
   const {
@@ -124,13 +149,16 @@ const AuthNavigator = () => {
       try {
         const initialUrl = await Linking.getInitialURL();
         if (initialUrl) {
+          console.log("Initial URL:", initialUrl);
         }
       } catch (error) {
         console.error("Error getting initial URL:", error);
       }
     };
 
-    const handleDeepLink = (event) => {};
+    const handleDeepLink = (event) => {
+      console.log("Deep link:", event.url);
+    };
 
     handleInitialURL();
 
@@ -141,6 +169,8 @@ const AuthNavigator = () => {
     };
   }, []);
 
+  // ✅ REMOVED: Duplicate splash screen from here
+  // Just handle the logout splash animation
   useEffect(() => {
     if (showSplashOnLogout) {
       splashFadeOut.setValue(1);
@@ -157,16 +187,7 @@ const AuthNavigator = () => {
     }
   }, [showSplashOnLogout]);
 
-  if (isLoading) {
-    return (
-      <ImageBackground
-        source={require("./assets/SplashScreenImage/BGIMG.jpg")}
-        style={styles.backgroundImage}
-        imageStyle={styles.backgroundImageStyle}
-      />
-    );
-  }
-
+  // Show logout splash only
   if (showSplashOnLogout) {
     return (
       <Animated.View
@@ -282,8 +303,6 @@ const AuthNavigator = () => {
           <Stack.Screen name="FavoritesScreen" component={FavoritesScreen} />
           <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-
-          {/* NEW: Past Bookings Screen */}
           <Stack.Screen
             name="PastBookingsScreen"
             component={PastBookingsScreen}
@@ -295,22 +314,40 @@ const AuthNavigator = () => {
   );
 };
 
-// Main App Component
+// ✅ OPTIMIZED: Main App Component with Single Splash & Server Wake-up
 const AppContent = () => {
   const [isAppReady, setIsAppReady] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState("Initializing...");
   const splashFadeOut = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    let splashTimer = setTimeout(() => {
-      Animated.timing(splashFadeOut, {
-        toValue: 0,
-        duration: 600,
-        useNativeDriver: true,
-      }).start(() => {
-        setIsAppReady(true);
-      });
-    }, 1500);
-    return () => clearTimeout(splashTimer);
+    const initializeApp = async () => {
+      try {
+        // Step 1: Wake up server (most important!)
+        setLoadingProgress("Connecting to server...");
+        await wakeUpServer();
+        
+        // Step 2: Small delay for smooth transition
+        setLoadingProgress("Loading app...");
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Step 3: Fade out splash
+        setLoadingProgress("Almost ready...");
+        Animated.timing(splashFadeOut, {
+          toValue: 0,
+          duration: 600,
+          useNativeDriver: true,
+        }).start(() => {
+          setIsAppReady(true);
+        });
+      } catch (error) {
+        console.error("Initialization error:", error);
+        // Even on error, show the app
+        setTimeout(() => setIsAppReady(true), 2000);
+      }
+    };
+
+    initializeApp();
   }, []);
 
   if (!isAppReady) {
@@ -322,7 +359,13 @@ const AppContent = () => {
           source={require("./assets/SplashScreenImage/BGIMG.jpg")}
           style={styles.backgroundImage}
           imageStyle={styles.backgroundImageStyle}
-        />
+        >
+          {/* ✅ Added loading indicator */}
+          <View style={styles.loadingIndicator}>
+            <ActivityIndicator size="large" color="#FF6B6B" />
+            <Text style={styles.loadingText}>{loadingProgress}</Text>
+          </View>
+        </ImageBackground>
       </Animated.View>
     );
   }
@@ -332,11 +375,14 @@ const AppContent = () => {
       <FavoritesProvider>
         <NavigationContainer
           linking={linking}
-          onReady={() => {}}
+          onReady={() => {
+            console.log("✅ Navigation ready");
+          }}
           onStateChange={(state) => {
             if (state) {
               const currentRoute = state.routes[state.index];
               if (currentRoute.params) {
+                console.log("Route params:", currentRoute.params);
               }
             }
           }}
@@ -379,5 +425,17 @@ const styles = StyleSheet.create({
   },
   backgroundImageStyle: {
     resizeMode: "cover",
+  },
+  // ✅ NEW: Loading indicator styles
+  loadingIndicator: {
+    position: "absolute",
+    bottom: 100,
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "500",
   },
 });
