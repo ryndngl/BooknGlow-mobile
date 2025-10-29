@@ -8,11 +8,6 @@
     "userInterfaceStyle": "light",
     "scheme": "salonmobileapp",
     "icon": "./assets/vans-glow-up-salon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
@@ -46,7 +41,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": ""
     },
     "extra": {
       "eas": {
