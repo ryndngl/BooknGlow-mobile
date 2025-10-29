@@ -59,7 +59,6 @@ export const BookingProvider = ({ children }) => {
         setBookings(transformedBookings);
         return { success: true, count: transformedBookings.length };
       } else {
-        console.log(' No bookings found');
         setBookings([]);
         return { success: true, count: 0 };
       }

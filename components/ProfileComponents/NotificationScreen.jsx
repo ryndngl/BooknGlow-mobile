@@ -22,7 +22,6 @@ const NotificationScreen = () => {
       
       const userData = await AsyncStorage.getItem('user');
       if (!userData) {
-        console.log('No user data found');
         setLoading(false);
         return;
       }

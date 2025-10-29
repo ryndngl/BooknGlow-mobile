@@ -85,7 +85,6 @@ const linking = {
         path: "ResetPasswordScreen",
         parse: {
           token: (token) => {
-            console.log("Deep link received token:", token);
             return token;
           },
         },
@@ -125,7 +124,6 @@ const AuthNavigator = () => {
       try {
         const initialUrl = await Linking.getInitialURL();
         if (initialUrl) {
-          console.log("App opened with URL:", initialUrl);
         }
       } catch (error) {
         console.error("Error getting initial URL:", error);
@@ -133,7 +131,6 @@ const AuthNavigator = () => {
     };
 
     const handleDeepLink = (event) => {
-      console.log("Deep link received while app running:", event.url);
     };
 
     handleInitialURL();

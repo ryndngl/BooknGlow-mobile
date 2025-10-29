@@ -50,7 +50,6 @@ export const useServiceDetail = () => {
     try {
       const updatedService = await servicesAPI.getServiceByName(service.name);
       setService(updatedService);
-      console.log('✅ Service refreshed successfully');
     } catch (error) {
       console.error('❌ Error refreshing service:', error);
       setError(error.message);

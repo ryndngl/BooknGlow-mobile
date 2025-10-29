@@ -105,7 +105,6 @@ export const FavoritesProvider = ({ children }) => {
   const toggleFavorite = async (service, style) => {
     try {
       if (!isAuthenticated || !user) {
-        console.log('User not authenticated, cannot toggle favorite');
         return false;
       }
 
@@ -223,7 +222,6 @@ export const FavoritesProvider = ({ children }) => {
       
       if (favoritesKey) {
         await AsyncStorage.removeItem(favoritesKey);
-        console.log(`Cleared all favorites for user:`, user?.email || user?.fullName);
         return true;
       }
       return false;

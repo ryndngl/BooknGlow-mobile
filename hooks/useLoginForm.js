@@ -22,8 +22,6 @@ export const useLoginForm = () => {
     try {
       setLoading(true);
       
-      console.log('Login attempt for:', email);
-
       const result = await login(email, password);
          
       if (result.success) {
@@ -32,7 +30,6 @@ export const useLoginForm = () => {
         // ✅ FETCH USER BOOKINGS from database
         const userId = result.user.id || result.user._id;
         if (userId) {
-          console.log('📥 Fetching bookings for user:', userId);
           await fetchUserBookings(userId);
         }
 

@@ -55,12 +55,7 @@ const confirmCancelBooking = async () => {
   if (selectedBooking) {
     try {
       //  BETTER: Extract ID with fallback
-      const bookingId = selectedBooking.id || selectedBooking._id;
-      
-      console.log(' Attempting to cancel booking');
-      console.log(' Booking ID:', bookingId);
-      console.log(' Full booking object:', JSON.stringify(selectedBooking, null, 2));
-      
+      const bookingId = selectedBooking.id || selectedBooking._id;      
       //  Validate ID before calling API
       if (!bookingId) {
         console.error(' Booking ID is missing from object!');
@@ -72,10 +67,7 @@ const confirmCancelBooking = async () => {
       }
       
       //  Call API to update status in database
-      console.log('📡 Calling API with ID:', bookingId);
       await appointmentService.cancelAppointment(bookingId);
-      
-      console.log(' Booking cancelled successfully in backend');
       
       //  Update local state - use the bookingId we extracted
       setBookings((prev) =>
@@ -87,10 +79,7 @@ const confirmCancelBooking = async () => {
       );
       
       // Switch to Cancelled tab to show result
-      setSelectedTab("Cancelled");
-      
-      console.log(' Local state updated');
-      
+      setSelectedTab("Cancelled");  
     } catch (error) {
       console.error(' Cancel booking error:', error);
       console.error(' Error details:', error.message);

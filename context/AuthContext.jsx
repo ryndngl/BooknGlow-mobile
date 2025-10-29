@@ -89,7 +89,6 @@ export const AuthProvider = ({ children }) => {
             // Token expired o invalid, clear storage
             await clearAuthData();
             if (showLogs) {
-              console.log("Token invalid, cleared auth data");
             }
             return false;
           }
@@ -100,7 +99,6 @@ export const AuthProvider = ({ children }) => {
         }
       } else {
         if (showLogs) {
-          console.log("No stored auth data found");
         }
         return false;
       }
@@ -177,9 +175,6 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
         setIsAuthenticated(true);
         setIsFirstTime(false); // User is no longer first time after login
-
-        console.log("Login successful:", userData.email || userData.fullName);
-
         return { success: true, data, user: userData };
       } else {
         return { success: false, message: data.message || "Login failed" };
@@ -203,8 +198,6 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       const currentUserId = user?.id || user?._id;
-      console.log("Logging out user:", user?.email || user?.fullName);
-
       // Optional: Create backup of current user's favorites before logout
       if (currentUserId) {
         try {
@@ -222,8 +215,6 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       setShowSplashOnLogout(true); // Show splash animation
       // isFirstTime stays false since user has used app before
-
-      console.log("Logout completed - login history preserved");
       return { success: true };
     } catch (error) {
       console.error("Logout error:", error);
@@ -239,7 +230,6 @@ export const AuthProvider = ({ children }) => {
   const clearAuthData = async () => {
     try {
       await AsyncStorage.multiRemove(["token", "user"]);
-      console.log("Auth data cleared - app history preserved");
     } catch (error) {
       console.error("Clear auth data error:", error);
     }
@@ -261,10 +251,6 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       setIsFirstTime(true); // Reset to true since we cleared everything
       setShowSplashOnLogout(false);
-
-      console.log(
-        "All app data cleared - app will show GetStarted on next launch"
-      );
     } catch (error) {
       console.error("Clear all app data error:", error);
     }
@@ -276,10 +262,6 @@ export const AuthProvider = ({ children }) => {
       const updatedUser = { ...user, ...newUserData };
       await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
       setUser(updatedUser);
-      console.log(
-        "User data updated:",
-        updatedUser.email || updatedUser.fullName
-      );
       return { success: true };
     } catch (error) {
       console.error("Update user error:", error);

@@ -24,18 +24,10 @@ export const useTokenValidation = () => {
       });
 
       const result = await response.json();
-      
-      console.log('=== TOKEN VALIDATION DEBUG ===');
-      console.log('Token being validated:', token.trim());
-      console.log('Validation result:', result);
-      console.log('===============================');
 
       if (result.success === true || result.isSuccess === true) {
-        console.log('✅ Token validation successful, navigating to ResetPasswordScreen');
         return true;
       } else {
-        console.log('❌ Token validation failed:', result.message);
-        Alert.alert('Invalid Token', result.message || 'The token you entered is invalid or has already been used.');
         return false;
       }
     } catch (error) {
@@ -56,7 +48,6 @@ export const useTokenValidation = () => {
     const isValidToken = await validateTokenBeforeNavigate(manualToken.trim());
     
     if (isValidToken) {
-      console.log('Navigating to ResetPasswordScreen with validated token:', manualToken.trim());
       navigation.navigate('ResetPasswordScreen', { token: manualToken.trim() });
     }
   };

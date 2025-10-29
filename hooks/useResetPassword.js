@@ -41,15 +41,7 @@ export const useResetPassword = () => {
       });
       const result = await response.json();
 
-      console.log('=== RESET PASSWORD DEBUG ===');
-      console.log('Response:', result);
-      console.log('Success field:', result.success);
-      console.log('isSuccess field:', result.isSuccess);
-      console.log('============================');
-
       if (result.success === true || result.isSuccess === true) {
-        console.log('SUCCESS: Password reset successful');
-        
         setNewPassword("");
         setConfirmPassword("");
         
@@ -69,7 +61,6 @@ export const useResetPassword = () => {
         }, 3000); 
 
       } else {
-        console.log('FAILED: Password reset failed');
         Alert.alert("Error", result.message || "Failed to reset password");
       }
     } catch (error) {

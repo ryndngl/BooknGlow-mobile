@@ -46,8 +46,7 @@ export class FavoritesMigrationHelper {
       // Save to user-specific storage
       await AsyncStorage.setItem(userFavoritesKey, JSON.stringify(migratedFavorites));
       
-      console.log(`Successfully migrated ${migratedFavorites.length} favorites to user ${userId}`);
-      
+  
       // Optionally remove global favorites after migration
       // await AsyncStorage.removeItem('favorites');
       
@@ -62,7 +61,6 @@ export class FavoritesMigrationHelper {
   static async cleanupGlobalFavorites() {
     try {
       await AsyncStorage.removeItem('favorites');
-      console.log('Global favorites removed');
       return true;
     } catch (error) {
       console.error('Failed to cleanup global favorites:', error);
@@ -116,14 +114,11 @@ export class FavoritesMigrationHelper {
       const favorites = await AsyncStorage.getItem(userFavoritesKey);
       
       if (!favorites) {
-        console.log('No favorites to backup for user:', userId);
         return null;
       }
 
       const backupKey = `favorites_backup_${userId}_${Date.now()}`;
       await AsyncStorage.setItem(backupKey, favorites);
-      
-      console.log('Backup created:', backupKey);
       return backupKey;
     } catch (error) {
       console.error('Backup failed:', error);
@@ -137,7 +132,6 @@ export class FavoritesMigrationHelper {
       const backupData = await AsyncStorage.getItem(backupKey);
       
       if (!backupData) {
-        console.log('No backup data found:', backupKey);
         return false;
       }
 
@@ -153,7 +147,6 @@ export class FavoritesMigrationHelper {
       
       await AsyncStorage.setItem(userFavoritesKey, backupData);
       
-      console.log('Favorites restored for user:', userId);
       return true;
     } catch (error) {
       console.error('Restore failed:', error);
@@ -161,27 +154,3 @@ export class FavoritesMigrationHelper {
     }
   }
 }
-
-// Usage examples:
-/*
-// In your AuthContext login function:
-const login = async (email, password) => {
-  // ... existing login code ...
-  
-  if (data.isSuccess && data.token) {
-    const userId = data.user._id || data.user.id;
-    
-    // Try to migrate old favorites
-    await FavoritesMigrationHelper.migrateGlobalFavoritesToUser(userId);
-    
-    // ... rest of login code ...
-  }
-};
-
-// In development/testing:
-const stats = await FavoritesMigrationHelper.getFavoritesStatistics();
-console.log('Favorites stats:', stats);
-
-// For admin panel:
-const backupKey = await FavoritesMigrationHelper.backupUserFavorites(userId);
-*/
