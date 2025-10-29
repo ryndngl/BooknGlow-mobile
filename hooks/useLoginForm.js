@@ -25,7 +25,6 @@ export const useLoginForm = () => {
       console.log('Login attempt for:', email);
 
       const result = await login(email, password);
-      console.log('Login result:', result);
          
       if (result.success) {
         showSuccessModal();
