@@ -1,6 +1,5 @@
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import { useFavorites } from "../../context/FavoritesContext";
 import { useAuth } from "../../context/AuthContext";
 
@@ -52,12 +51,10 @@ export default function ProfileScreen() {
     handleLogout,
   } = useLogoutFlow(logout, setShowSplashOnLogout, setUser, setDataLoaded);
 
-  // Sample data - in real app, these should come from API based on user
-  const pastBookings = [
-    { service: "Hair Cut", date: "Jan 25, 2025" },
-    { service: "Soft Gel", date: "Jan 10, 2025" },
-    { service: "Hair Color", date: "Dec 28, 2024" },
-  ];
+  // Navigate to Past Bookings Screen
+  const handlePastBookingsPress = () => {
+    navigation.navigate("PastBookingsScreen");
+  };
 
   return (
     <>
@@ -85,7 +82,7 @@ export default function ProfileScreen() {
               onPress={() => navigation.navigate("FavoritesScreen")}
             />
 
-            <PastBookingsSection bookings={pastBookings} />
+            <PastBookingsSection onPress={handlePastBookingsPress} />
 
             <LogoutSection onLogoutPress={confirmLogout} />
           </View>
