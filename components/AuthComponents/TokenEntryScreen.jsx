@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function TokenEntryScreen({
+  email,
   manualToken,
   setManualToken,
   validatingToken,
@@ -74,7 +75,7 @@ export default function TokenEntryScreen({
                     styles.submitTokenButton,
                     (!manualToken.trim() || validatingToken) && styles.submitTokenButtonDisabled
                   ]}
-                  onPress={handleManualTokenSubmit}
+                  onPress={() => handleManualTokenSubmit(email)}
                   disabled={!manualToken.trim() || validatingToken}
                 >
                   {validatingToken ? (
