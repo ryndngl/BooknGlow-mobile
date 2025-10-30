@@ -26,15 +26,15 @@ export const useForgotPassword = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email.toLowerCase().trim() }),
       });
+      
       const responseText = await response.text();
       if (!responseText) {
         Alert.alert('Error', 'Empty response from server');
         return;
       }
 
-      // Check if response looks like JSON
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         Alert.alert('Error', `Server returned ${contentType || 'unknown'} instead of JSON. Check server logs.`);
@@ -45,9 +45,10 @@ export const useForgotPassword = () => {
       try {
         result = JSON.parse(responseText);
       } catch (parseError) {
+        Alert.alert('Error', 'Invalid JSON response from server');
         return;
       }
-      // Check HTTP status first
+
       if (!response.ok) {
         Alert.alert('Error', result.message || `Server error: ${response.status}`);
         return;
@@ -61,7 +62,6 @@ export const useForgotPassword = () => {
           setShowTokenEntry(true);
         }, 3000);
       } else {
-       
         Alert.alert('Error', result.message || 'Failed to send reset email');
       }
     } catch (error) {  
