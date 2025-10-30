@@ -8,7 +8,7 @@ export const useTokenValidation = () => {
   const [manualToken, setManualToken] = useState('');
   const [validatingToken, setValidatingToken] = useState(false);
 
-  const validateTokenBeforeNavigate = async (token) => {
+  const validateTokenBeforeNavigate = async (token, email) => {
     try {
       setValidatingToken(true);
       
@@ -19,6 +19,7 @@ export const useTokenValidation = () => {
         },
         body: JSON.stringify({ 
           token: token.trim(),
+          email: email.toLowerCase().trim(),
           type: 'mobile'
         }),
       });
@@ -28,6 +29,7 @@ export const useTokenValidation = () => {
       if (result.success === true || result.isSuccess === true) {
         return true;
       } else {
+        Alert.alert('Error', result.message || 'Invalid reset code');
         return false;
       }
     } catch (error) {
@@ -39,16 +41,24 @@ export const useTokenValidation = () => {
     }
   };
 
-  const handleManualTokenSubmit = async () => {
+  const handleManualTokenSubmit = async (email) => {
     if (!manualToken.trim()) {
       Alert.alert('Error', 'Please enter the token from your email');
       return;
     }
 
-    const isValidToken = await validateTokenBeforeNavigate(manualToken.trim());
+    if (!email) {
+      Alert.alert('Error', 'Email not found. Please try again from the beginning.');
+      return;
+    }
+
+    const isValidToken = await validateTokenBeforeNavigate(manualToken.trim(), email);
     
     if (isValidToken) {
-      navigation.navigate('ResetPasswordScreen', { token: manualToken.trim() });
+      navigation.navigate('ResetPasswordScreen', { 
+        token: manualToken.trim(),
+        email: email.toLowerCase().trim()
+      });
     }
   };
 
