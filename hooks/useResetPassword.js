@@ -8,7 +8,7 @@ export const useResetPassword = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { token } = route.params || {};
+  const { token, email } = route.params || {};
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,6 +30,12 @@ export const useResetPassword = () => {
       return;
     }
 
+    if (!email || !token) {
+      Alert.alert("Error", "Session expired. Please start over.");
+      navigation.navigate('LoginScreen');
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await fetch(`${API_URL}/api/auth/reset-password`, {
@@ -37,9 +43,34 @@ export const useResetPassword = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ token, newPassword }),
+        body: JSON.stringify({ 
+          token: token,
+          email: email.toLowerCase().trim(),
+          newPassword: newPassword,
+          type: 'mobile'
+        }),
       });
-      const result = await response.json();
+
+      const responseText = await response.text();
+      
+      if (!responseText) {
+        Alert.alert('Error', 'Empty response from server');
+        return;
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        Alert.alert('Error', 'Server returned invalid response. Please try again.');
+        return;
+      }
+
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        Alert.alert('Error', 'Invalid response from server');
+        return;
+      }
 
       if (result.success === true || result.isSuccess === true) {
         setNewPassword("");
@@ -65,7 +96,11 @@ export const useResetPassword = () => {
       }
     } catch (error) {
       console.error("Reset password error:", error);
-      Alert.alert("Error", "Something went wrong. Please try again.");
+      if (error.name === 'TypeError' && error.message.includes('Network request failed')) {
+        Alert.alert('Connection Error', 'Cannot connect to server. Please check your connection.');
+      } else {
+        Alert.alert("Error", "Something went wrong. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
