@@ -3,51 +3,62 @@
     "name": "BOOKnGLOW",
     "slug": "BooknGlowClient",
     "version": "1.0.0",
-    "sdkVersion": "54.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "scheme": "salonmobileapp",
+    "scheme": "booknglow",
     "icon": "./assets/vans-glow-up-salon.png",
-    "assetBundlePatterns": ["**/*"],
+    "splash": {
+      "image": "./assets/vans-glow-up-salon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FF4444"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.salonbookingapp",
+      "bundleIdentifier": "com.glowup.booknglow",
       "infoPlist": {
         "CFBundleURLTypes": [
           {
-            "CFBundleURLName": "salonmobileapp",
-            "CFBundleURLSchemes": ["salonmobileapp"]
+            "CFBundleURLName": "booknglow",
+            "CFBundleURLSchemes": [
+              "booknglow"
+            ]
           }
         ]
       }
     },
     "android": {
-      "package": "com.yourcompany.salonmobileapp",
+      "package": "com.glowup.booknglow",
+      "versionCode": 1,
       "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/vans-glow-up-salon.png",
         "backgroundColor": "#FF4444",
-        "backgroundImage": null,
         "monochromeImage": "./assets/vans-glow-up-salon.png"
       },
       "intentFilters": [
         {
           "action": "VIEW",
-          "category": ["BROWSABLE", "DEFAULT"],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ],
           "data": {
-            "scheme": "salonmobileapp"
+            "scheme": "booknglow"
           }
         }
       ]
     },
     "web": {
-      "favicon": ""
+      "favicon": "./assets/vans-glow-up-salon.png"
     },
+    "plugins": [],
     "extra": {
       "eas": {
-        "projectId": "3a58fc89-466d-42b2-94f0-0a8eda491334"
+        "projectId": "bccae9f8-5b26-4737-ac4d-9bdcbc8aa128"
       }
-    },
-    "plugins": []
+    }
   }
 }
