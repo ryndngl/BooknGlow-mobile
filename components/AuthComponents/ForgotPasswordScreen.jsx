@@ -56,6 +56,7 @@ export default function ForgotPasswordScreen() {
   if (showTokenEntry) {
     return (
       <TokenEntryScreen
+        email={email}
         manualToken={manualToken}
         setManualToken={setManualToken}
         validatingToken={validatingToken}
