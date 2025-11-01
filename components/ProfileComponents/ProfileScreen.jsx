@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useFavorites } from "../../context/FavoritesContext";
 import { useAuth } from "../../context/AuthContext";
 
-// Components - same level lang kayo sa ProfileComponents folder
+// Components
 import ProfileHeader from "./ProfileHeader";
 import ProfileCard from "./ProfileCard";
 import FavoritesSection from "./FavoritesSection";
@@ -12,8 +12,8 @@ import LogoutSection from "./LogoutSection";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 import LogoutSuccessModal from "./LogoutSuccessModal";
 
-// Hooks - galing sa hooks folder (2 levels up)
-import { useProfileData, usePhoneEditor, useLogoutFlow } from "../../hooks";
+// Hooks
+import { useProfileData, useProfileEditor, useLogoutFlow } from "../../hooks";
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -35,7 +35,7 @@ export default function ProfileScreen() {
     refreshFavorites
   );
 
-  const { phoneEditable, handlePhoneChange, handleEditPress } = usePhoneEditor(
+  const { editing, handleNameChange, handlePhoneChange, handleEditPress } = useProfileEditor(
     user,
     setUser,
     updateUser
@@ -51,7 +51,6 @@ export default function ProfileScreen() {
     handleLogout,
   } = useLogoutFlow(logout, setShowSplashOnLogout, setUser, setDataLoaded);
 
-  // Navigate to Past Bookings Screen
   const handlePastBookingsPress = () => {
     navigation.navigate("PastBookingsScreen");
   };
@@ -71,7 +70,8 @@ export default function ProfileScreen() {
         >
           <ProfileCard
             user={user}
-            phoneEditable={phoneEditable}
+            editing={editing}
+            onNameChange={handleNameChange}
             onPhoneChange={handlePhoneChange}
             onEditPress={handleEditPress}
           />

@@ -3,16 +3,20 @@ import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-export function usePhoneEditor(user, setUser, updateUser) {
-  const [phoneEditable, setPhoneEditable] = useState(false);
+export function useProfileEditor(user, setUser, updateUser) {
+  const [editing, setEditing] = useState(false);
+
+  const handleNameChange = (text) => {
+    setUser({ ...user, fullName: text });
+  };
 
   const handlePhoneChange = (text) => {
     setUser({ ...user, phone: text });
   };
 
-  const handleUpdatePhone = async () => {
-    if (!user.phone.trim()) {
-      Alert.alert("Error", "Please enter a valid phone number");
+  const handleUpdate = async () => {
+    if (!user.fullName?.trim()) {
+      Alert.alert("Error", "Please enter your name");
       return;
     }
 
@@ -21,36 +25,44 @@ export function usePhoneEditor(user, setUser, updateUser) {
       if (storedToken && user._id) {
         await axios.put(
           `https://salon-app-server.onrender.com/api/users/${user._id}`,
-          { phone: user.phone },
+          { 
+            fullName: user.fullName,
+            phone: user.phone 
+          },
           {
             headers: { Authorization: `Bearer ${storedToken}` },
             timeout: 10000,
           }
         );
 
-        const updatedUserData = { ...user, phone: user.phone };
+        const updatedUserData = { 
+          ...user, 
+          fullName: user.fullName,
+          phone: user.phone 
+        };
         await updateUser(updatedUserData);
         setUser(updatedUserData);
 
-        Alert.alert("Success", "Phone number updated successfully");
+        Alert.alert("Success", "Profile updated successfully");
       }
-      setPhoneEditable(false);
+      setEditing(false);
     } catch (error) {
-      console.error("Failed to update phone:", error);
-      Alert.alert("Error", "Failed to update phone number");
+      console.error("Failed to update profile:", error);
+      Alert.alert("Error", "Failed to update profile");
     }
   };
 
   const handleEditPress = () => {
-    if (phoneEditable) {
-      handleUpdatePhone();
+    if (editing) {
+      handleUpdate();
     } else {
-      setPhoneEditable(true);
+      setEditing(true);
     }
   };
 
   return {
-    phoneEditable,
+    editing,
+    handleNameChange,
     handlePhoneChange,
     handleEditPress,
   };

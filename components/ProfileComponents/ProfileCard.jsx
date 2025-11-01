@@ -3,7 +3,8 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function ProfileCard({ 
   user, 
-  phoneEditable, 
+  editing,
+  onNameChange,
   onPhoneChange,
   onEditPress 
 }) {
@@ -12,10 +13,7 @@ export default function ProfileCard({
       <View style={styles.profileHeader}>
         <View style={styles.profileImageContainer}>
           {user.photo ? (
-            <Image
-              source={{ uri: user.photo }}
-              style={styles.profileImage}
-            />
+            <Image source={{ uri: user.photo }} style={styles.profileImage} />
           ) : (
             <View style={styles.placeholderCircle}>
               <Icon name="person" size={40} color="#999" />
@@ -26,11 +24,21 @@ export default function ProfileCard({
           </View>
         </View>
         <View style={styles.profileInfo}>
-          <Text style={styles.userName}>
-            {user.fullName || "No name"}
-          </Text>
+          {editing ? (
+            <TextInput
+              style={styles.nameInput}
+              placeholder="Full Name"
+              value={user.fullName}
+              onChangeText={onNameChange}
+              placeholderTextColor="#aaa"
+            />
+          ) : (
+            <Text style={styles.userName}>
+              {user.fullName || "No name"}
+            </Text>
+          )}
           <Text style={styles.userEmail}>{user.email || "No email"}</Text>
-          {phoneEditable ? (
+          {editing ? (
             <TextInput
               style={styles.phoneInput}
               placeholder="+63 --- --- ----"
@@ -46,12 +54,9 @@ export default function ProfileCard({
           )}
         </View>
       </View>
-      <TouchableOpacity
-        style={styles.editButton}
-        onPress={onEditPress}
-      >
+      <TouchableOpacity style={styles.editButton} onPress={onEditPress}>
         <Text style={styles.editButtonText}>
-          {phoneEditable ? "Save Phone" : "Edit Profile"}
+          {editing ? "Save Changes" : "Edit Profile"}
         </Text>
       </TouchableOpacity>
     </View>
@@ -107,6 +112,17 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 20,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 4,
+  },
+  nameInput: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    fontSize: 18,
     fontWeight: "600",
     color: "#333",
     marginBottom: 4,
