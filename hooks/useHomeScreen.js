@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Alert, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFavorites } from '../context/FavoritesContext';
 import { useApi } from './useApi';
 import { useTestimonials } from './useTestimonials';
+import { useFavorites } from './useFavorites'; 
 
 import API_URL from '../config/api';
 const API_BASE_URL = API_URL.replace("/api", "") + "/api";
@@ -86,41 +86,40 @@ export const useHomeScreen = () => {
       searchStyles(searchQuery).then(setFilteredStyles);
     }, 400);
 
-
     return () => clearTimeout(delayDebounce);
   }, [searchQuery, servicesData]);
 
   // Handlers
- const handleServicePress = async (serviceName) => {
-  try {
-    setLoading(true);
-    
-    const response = await fetch(
-      `${API_BASE_URL}/services/name/${encodeURIComponent(serviceName)}`
-    );
+  const handleServicePress = async (serviceName) => {
+    try {
+      setLoading(true);
+      
+      const response = await fetch(
+        `${API_BASE_URL}/services/name/${encodeURIComponent(serviceName)}`
+      );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse = await response.json();
+      const selectedService = apiResponse.data || apiResponse;
+
+      if (selectedService && selectedService.name) {
+        navigation.navigate("ServiceDetailScreen", {
+          service: selectedService,
+        });
+      } else {
+        Alert.alert("Service Not Found", "This service is not available yet.");
+      }
+    } catch (error) {
+      console.error('Error details:', error);
+      Alert.alert("Error", "Failed to load service details. Please try again.");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const apiResponse = await response.json();
-    const selectedService = apiResponse.data || apiResponse;
-
-
-    if (selectedService && selectedService.name) {
-      navigation.navigate("ServiceDetailScreen", {
-        service: selectedService,
-      });
-    } else {
-      Alert.alert("Service Not Found", "This service is not available yet.");
-    }
-  } catch (error) {
-    console.error('Error details:', error);
-    Alert.alert("Error", "Failed to load service details. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
   const openImageModal = (image) => {
     setSelectedImage(image);
     setModalVisible(true);
@@ -131,20 +130,20 @@ export const useHomeScreen = () => {
     Keyboard.dismiss();
   };
 
-// Refresh handler
-const onRefresh = async () => {
-  setRefreshing(true);
-  try {
-    await fetchServices();
-    if (userObj) {
-      await fetchTestimonials();
+  // Refresh handler
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await fetchServices();
+      if (userObj) {
+        await fetchTestimonials();
+      }
+    } catch (error) {
+      console.error('Refresh error:', error);
+    } finally {
+      setRefreshing(false);
     }
-  } catch (error) {
-    console.error('Refresh error:', error);
-  } finally {
-    setRefreshing(false);
-  }
-};
+  };
 
   return {
     // Search related
@@ -168,6 +167,6 @@ const onRefresh = async () => {
     // Handlers
     handleServicePress,
     openImageModal,
-     onRefresh,  
+    onRefresh,
   };
 };
