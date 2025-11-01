@@ -25,7 +25,7 @@ export { useServiceDetail } from './useServiceDetail';
 
 // ProfileComponents hooks
 export { useProfileData } from './useProfileData';
-export { usePhoneEditor } from './usePhoneEditor';
+export { useProfileEditor } from './useProfileEditor';
 export { useLogoutFlow } from './useLogoutFlow';
 
 // FavoritesScreen hooks
