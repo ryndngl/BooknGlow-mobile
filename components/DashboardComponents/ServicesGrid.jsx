@@ -35,7 +35,7 @@ const DISPLAY_SERVICES = [
   },
 ];
 
-const ServicesGrid = ({ loading, onServicePress }) => {
+const ServicesGrid = ({ loading, onServicePress, isFavorite, onToggleFavorite }) => {
   return (
     <View>
       <Text style={styles.title}>Our Services</Text>
