@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useFavorites } from "../../context/FavoritesContext";
 import { getImageSource, extractImages } from "../../utils/imageHelper";
 import ImageView from "../../utils/ImageView";
 
@@ -23,12 +22,12 @@ const BigServiceCard = ({
   onPress,
   onBookPress,
   searchCard,
+  isFavorite,
+  onToggleFavorite,
 }) => {
-  const { toggleFavorite, isFavorite } = useFavorites();
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
   
-  // Image viewer state
   const [imageViewerVisible, setImageViewerVisible] = useState(false);
   const [viewerImageSource, setViewerImageSource] = useState(null);
 
@@ -60,22 +59,10 @@ const BigServiceCard = ({
 
   const handleBookPress = () => onBookPress?.();
 
-  const handleFavoritePress = async () => {
-    const serviceObj = service || { name: actualServiceName };
-    
-    const styleObj = {
-      ...styleData,
-      ...(isFootSpaService && { images: extractImages(styleData) })
-    };
-
-    try {
-      await toggleFavorite(serviceObj, styleObj);
-    } catch (error) {
+  const handleFavoritePress = () => {
+    if (onToggleFavorite) {
+      onToggleFavorite();
     }
-  };
-
-  const checkIsFavorite = () => {
-    return isFavorite(actualServiceName, styleData?.name);
   };
 
   const imagesArray = Array.isArray(extractImages(styleData))
@@ -83,7 +70,6 @@ const BigServiceCard = ({
     : [];
   const hasMultipleImages = imagesArray.length > 1;
 
-  // Foot Spa multi-image layout
   if (isFootSpaService && hasMultipleImages) {
     return (
       <>
@@ -127,9 +113,9 @@ const BigServiceCard = ({
                 onPress={handleFavoritePress}
               >
                 <Ionicons
-                  name={checkIsFavorite() ? "heart" : "heart-outline"}
+                  name={isFavorite ? "heart" : "heart-outline"}
                   size={24}
-                  color={checkIsFavorite() ? "red" : "#555"}
+                  color={isFavorite ? "red" : "#555"}
                 />
               </TouchableOpacity>
 
@@ -158,7 +144,6 @@ const BigServiceCard = ({
     );
   }
 
-  // Default layout for all other services
   const firstImage = imagesArray.length > 0 ? imagesArray[0] : styleData?.image;
   const imageSource = getImageSource(firstImage, actualServiceName);
 
@@ -221,9 +206,9 @@ const BigServiceCard = ({
             <View style={styles.bottomActions}>
               <TouchableOpacity style={styles.heartIcon} onPress={handleFavoritePress}>
                 <Ionicons
-                  name={checkIsFavorite() ? "heart" : "heart-outline"}
+                  name={isFavorite ? "heart" : "heart-outline"}
                   size={20}
-                  color={checkIsFavorite() ? "red" : "#999"}
+                  color={isFavorite ? "red" : "#999"}
                 />
               </TouchableOpacity>
 
