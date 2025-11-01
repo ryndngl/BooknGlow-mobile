@@ -1,29 +1,33 @@
-// context/FavoritesContext.js
 import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import { useAuth } from './AuthContext';
-import { extractImages } from '../utils/imageHelper'; // Import your image helper
+import { extractImages } from '../utils/imageHelper';
 
 const FavoritesContext = createContext();
+const API_URL = "https://salon-app-server.onrender.com/api/favorites";
 
 export const FavoritesProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { user, isAuthenticated } = useAuth();
 
-  // Get user-specific storage key
   const getFavoritesKey = () => {
     if (isAuthenticated && (user?.id || user?._id)) {
       const userId = user.id || user._id;
       return `favorites_${userId}`;
     }
-    return null; // No key if not authenticated
+    return null;
   };
 
-  // Enhanced load function with error boundary and user-specific storage
+  const getAuthHeader = async () => {
+    const token = await AsyncStorage.getItem("token");
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
+
+  // Load favorites from BACKEND
   const loadFavorites = async (forceReload = false) => {
     try {
-      // Don't load if already loading or no user
       if (isLoading && !forceReload) return;
       if (!isAuthenticated || !user) {
         setFavorites([]);
@@ -31,144 +35,138 @@ export const FavoritesProvider = ({ children }) => {
       }
 
       setIsLoading(true);
-      const favoritesKey = getFavoritesKey();
-      
-      if (!favoritesKey) {
-        setFavorites([]);
-        return;
-      }
 
-      const storedFavorites = await AsyncStorage.getItem(favoritesKey);
-      
-      if (storedFavorites) {
-        const parsed = JSON.parse(storedFavorites);
-        const cleaned = parsed.filter(
-          fav => fav?.service?.name && fav?.name && fav?.price
-        );
-        if (cleaned.length !== parsed.length) {
-          console.warn(`Cleaned ${parsed.length - cleaned.length} invalid favorites`);
-          // Save cleaned data back
-          await AsyncStorage.setItem(favoritesKey, JSON.stringify(cleaned));
+      // Try to load from backend first
+      const headers = await getAuthHeader();
+      const response = await axios.get(API_URL, { 
+        headers,
+        timeout: 10000 
+      });
+
+      if (response.data.success) {
+        const backendFavorites = response.data.data || [];
+        setFavorites(backendFavorites);
+        
+        // Cache to AsyncStorage
+        const favoritesKey = getFavoritesKey();
+        if (favoritesKey) {
+          await AsyncStorage.setItem(favoritesKey, JSON.stringify(backendFavorites));
         }
-        setFavorites(cleaned);
-      } else {
-        setFavorites([]);
       }
     } catch (error) {
-      console.error("Favorites load error:", error);
-      setFavorites([]);
+      console.error("Load favorites error:", error);
+      
+      // Fallback to AsyncStorage if backend fails
+      const favoritesKey = getFavoritesKey();
+      if (favoritesKey) {
+        const cached = await AsyncStorage.getItem(favoritesKey);
+        if (cached) {
+          setFavorites(JSON.parse(cached));
+        }
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Save favorites to user-specific storage immediately
-  const saveFavorites = async (favoritesData) => {
-    try {
-      if (!isAuthenticated || !user) {
-        return false;
-      }
-
-      const favoritesKey = getFavoritesKey();
-      if (!favoritesKey) {
-        return false;
-      }
-
-      await AsyncStorage.setItem(favoritesKey, JSON.stringify(favoritesData));
-      return true;
-    } catch (error) {
-      console.error("Favorites save error:", error);
-      return false;
-    }
-  };
-
-  // Load favorites when user authentication status changes
   useEffect(() => {
     if (isAuthenticated && user && (user.id || user._id)) {
-      loadFavorites(true); // Force reload when user changes
+      loadFavorites(true);
     } else if (!isAuthenticated) {
       setFavorites([]);
     }
-  }, [isAuthenticated, user?.id, user?._id, user?.email]);
+  }, [isAuthenticated, user?.id, user?._id]);
 
-  // FIXED: Improved item identification that handles both service name and style name properly
   const getItemKey = (service, style) => {
-    if (!service?.name || !style?.name) {
-      console.warn("Attempting to get key for invalid item:", { service, style });
-      return null;
-    }
-    // Create a consistent key using service name and style name
+    if (!service?.name || !style?.name) return null;
     return `${service.name.toLowerCase().trim()}|${style.name.toLowerCase().trim()}`;
   };
 
-  // FIXED: Enhanced toggle function with proper data structure handling
+  // Toggle with BACKEND SYNC
   const toggleFavorite = async (service, style) => {
     try {
-      if (!isAuthenticated || !user) {
-        return false;
-      }
+      if (!isAuthenticated || !user) return false;
 
       const key = getItemKey(service, style);
       if (!key) return false;
-      
-      let updatedFavorites;
-      
-      setFavorites(prev => {
-        const existingIndex = prev.findIndex(item => 
-          getItemKey(item.service, item) === key
-        );
 
-        if (existingIndex >= 0) {
-          // Remove from favorites
-          updatedFavorites = prev.filter((_, index) => index !== existingIndex);
-        } else {
-          // Add to favorites with proper structure
-          const favoriteItem = {
-            ...style,
-            service: {
-              ...service,
-              name: service.name
-            },
-            timestamp: new Date().toISOString(),
-            userId: user?.id || user?._id,
-            
-            // FIXED: Handle images properly for different service types
-            ...(style.images && Array.isArray(style.images) && style.images.length > 0 
-              ? { images: style.images } 
-              : style.image 
-                ? { image: style.image }
-                : extractImages && extractImages(style) 
-                  ? (() => {
-                      const extracted = extractImages(style);
-                      return Array.isArray(extracted) && extracted.length > 1 
-                        ? { images: extracted }
-                        : { image: extracted[0] || extracted };
-                    })()
-                  : {}
-            )
-          };
-          
-          updatedFavorites = [...prev, favoriteItem];
+      const existingIndex = favorites.findIndex(item => 
+        getItemKey(item.service, item) === key
+      );
+
+      const headers = await getAuthHeader();
+
+      if (existingIndex >= 0) {
+        // REMOVE from backend
+        await axios.delete(`${API_URL}/remove`, {
+          headers,
+          data: {
+            serviceName: service.name,
+            styleName: style.name
+          },
+          timeout: 10000
+        });
+
+        // Update local state
+        const updated = favorites.filter((_, index) => index !== existingIndex);
+        setFavorites(updated);
+        
+        const favoritesKey = getFavoritesKey();
+        if (favoritesKey) {
+          await AsyncStorage.setItem(favoritesKey, JSON.stringify(updated));
         }
+      } else {
+        // ADD to backend
+        const favoriteItem = {
+          ...style,
+          service: {
+            ...service,
+            name: service.name
+          },
+          timestamp: new Date().toISOString(),
+          userId: user?.id || user?._id,
+          ...(style.images && Array.isArray(style.images) && style.images.length > 0 
+            ? { images: style.images } 
+            : style.image 
+              ? { image: style.image }
+              : extractImages && extractImages(style) 
+                ? (() => {
+                    const extracted = extractImages(style);
+                    return Array.isArray(extracted) && extracted.length > 1 
+                      ? { images: extracted }
+                      : { image: extracted[0] || extracted };
+                  })()
+                : {}
+          )
+        };
+
+        await axios.post(`${API_URL}/add`, {
+          service,
+          style: favoriteItem
+        }, {
+          headers,
+          timeout: 10000
+        });
+
+        // Update local state
+        const updated = [...favorites, favoriteItem];
+        setFavorites(updated);
         
-        // Save immediately after updating
-        saveFavorites(updatedFavorites);
-        
-        return updatedFavorites;
-      });
-      
+        const favoritesKey = getFavoritesKey();
+        if (favoritesKey) {
+          await AsyncStorage.setItem(favoritesKey, JSON.stringify(updated));
+        }
+      }
+
       return true;
     } catch (error) {
+      console.error("Toggle favorite error:", error);
       return false;
     }
   };
 
-  // FIXED: Simplified and more reliable isFavorite check
   const isFavorite = (serviceName, styleName) => {
-    if (!serviceName || !styleName || !isAuthenticated) {
-      return false;
-    }
-
+    if (!serviceName || !styleName || !isAuthenticated) return false;
     const key = `${serviceName.toLowerCase().trim()}|${styleName.toLowerCase().trim()}`;
     return favorites.some(item => {
       const itemKey = getItemKey(item.service, item);
@@ -176,17 +174,11 @@ export const FavoritesProvider = ({ children }) => {
     });
   };
 
-  // Add to favorites function
   const addToFavorites = async (service, style) => {
     if (!isAuthenticated || !user) return false;
-    
     const key = getItemKey(service, style);
     if (!key) return false;
-    
-    const exists = favorites.some(item => 
-      getItemKey(item.service, item) === key
-    );
-    
+    const exists = favorites.some(item => getItemKey(item.service, item) === key);
     if (!exists) {
       await toggleFavorite(service, style);
       return true;
@@ -194,17 +186,11 @@ export const FavoritesProvider = ({ children }) => {
     return false;
   };
 
-  // Remove from favorites function
   const removeFromFavorites = async (service, style) => {
     if (!isAuthenticated || !user) return false;
-    
     const key = getItemKey(service, style);
     if (!key) return false;
-    
-    const exists = favorites.some(item => 
-      getItemKey(item.service, item) === key
-    );
-    
+    const exists = favorites.some(item => getItemKey(item.service, item) === key);
     if (exists) {
       await toggleFavorite(service, style);
       return true;
@@ -212,40 +198,39 @@ export const FavoritesProvider = ({ children }) => {
     return false;
   };
 
-  // Clear all favorites for current user
   const clearFavorites = async () => {
     try {
       if (!isAuthenticated || !user) return false;
-      
+
+      const headers = await getAuthHeader();
+      await axios.delete(`${API_URL}/clear`, { 
+        headers,
+        timeout: 10000 
+      });
+
       setFavorites([]);
       const favoritesKey = getFavoritesKey();
-      
       if (favoritesKey) {
         await AsyncStorage.removeItem(favoritesKey);
-        return true;
       }
-      return false;
+      return true;
     } catch (error) {
       console.error('Clear favorites error:', error);
       return false;
     }
   };
 
-  // Get favorites by service
   const getFavoritesByService = (serviceName) => {
     if (!isAuthenticated) return [];
-    
     return favorites.filter(item => 
       item.service?.name?.toLowerCase() === serviceName?.toLowerCase()
     );
   };
 
-  // Force refresh favorites from storage
   const refreshFavorites = () => {
     return loadFavorites(true);
   };
 
-  // Context value
   const value = {
     favorites,
     toggleFavorite,
