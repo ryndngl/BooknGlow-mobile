@@ -1,4 +1,4 @@
-// screens/HomeScreen/Components/HomeContent.jsx
+// screens/HomeScreen/components/HomeContent.jsx
 import React from 'react';
 import { ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -7,7 +7,7 @@ import Banner from './Banner';
 import ServicesGrid from './ServicesGrid';
 import TestimonialsSection from './TestimonialsSection';
 
-const HomeContent = ({ displayName, loading, onServicePress, userObj, refreshing, onRefresh, unreadCount }) => {
+const HomeContent = ({ displayName, loading, onServicePress, userObj, refreshing, onRefresh, unreadCount, isFavorite, onToggleFavorite }) => {
   const navigation = useNavigation();
 
   return (
@@ -22,7 +22,7 @@ const HomeContent = ({ displayName, loading, onServicePress, userObj, refreshing
         />
       }
     >
-      <Header 
+      <Header
         displayName={displayName}
         onNotificationPress={() => navigation.navigate("NotificationScreen")}
         unreadCount={unreadCount}
@@ -31,6 +31,8 @@ const HomeContent = ({ displayName, loading, onServicePress, userObj, refreshing
       <ServicesGrid
         loading={loading}
         onServicePress={onServicePress}
+        isFavorite={isFavorite}
+        onToggleFavorite={onToggleFavorite}
       />
       <TestimonialsSection userObj={userObj} />
     </ScrollView>
