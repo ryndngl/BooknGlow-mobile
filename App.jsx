@@ -23,7 +23,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Context
 import { BookingProvider } from "./context/BookingContext";
-import { FavoritesProvider } from "./context/FavoritesContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 // Components - Clean organized imports
@@ -364,7 +363,6 @@ const AppContent = () => {
 
   return (
     <BookingProvider>
-      <FavoritesProvider>
         <NavigationContainer
           linking={linking}
           onReady={() => {
@@ -382,7 +380,6 @@ const AppContent = () => {
           <AuthNavigator />
           <StatusBar style="dark" />
         </NavigationContainer>
-      </FavoritesProvider>
     </BookingProvider>
   );
 };
