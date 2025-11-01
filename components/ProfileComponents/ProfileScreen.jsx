@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { useFavorites } from "../../context/FavoritesContext";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useAuth } from "../../context/AuthContext";
+import { useEffect, useCallback } from "react";
 
 // Components
 import ProfileHeader from "./ProfileHeader";
@@ -14,6 +14,7 @@ import LogoutSuccessModal from "./LogoutSuccessModal";
 
 // Hooks
 import { useProfileData, useProfileEditor, useLogoutFlow } from "../../hooks";
+import { useFavorites } from "../../hooks/useFavorites";
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -25,21 +26,19 @@ export default function ProfileScreen() {
     isAuthenticated,
     setShowSplashOnLogout,
   } = useAuth();
-  const { refreshFavorites, count: favoritesCount } = useFavorites();
+  
+  const { favorites, fetchFavorites } = useFavorites();
 
   // Custom hooks
   const { user, setUser, loading, dataLoaded, setDataLoaded } = useProfileData(
     authUser,
     isAuthenticated,
     updateUser,
-    refreshFavorites
+    fetchFavorites
   );
 
-  const { editing, handleNameChange, handlePhoneChange, handleEditPress } = useProfileEditor(
-    user,
-    setUser,
-    updateUser
-  );
+  const { editing, handleNameChange, handlePhoneChange, handleEditPress } =
+    useProfileEditor(user, setUser, updateUser);
 
   const {
     confirmVisible,
@@ -50,6 +49,18 @@ export default function ProfileScreen() {
     confirmLogout,
     handleLogout,
   } = useLogoutFlow(logout, setShowSplashOnLogout, setUser, setDataLoaded);
+
+  // ✅ Fetch favorites on mount
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
+
+  // ✅ Refresh favorites when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchFavorites();
+    }, [])
+  );
 
   const handlePastBookingsPress = () => {
     navigation.navigate("PastBookingsScreen");
@@ -78,7 +89,7 @@ export default function ProfileScreen() {
 
           <View style={styles.menuContainer}>
             <FavoritesSection
-              favoritesCount={favoritesCount}
+              favoritesCount={favorites.length}
               onPress={() => navigation.navigate("FavoritesScreen")}
             />
 
