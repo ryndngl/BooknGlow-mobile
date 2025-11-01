@@ -1,9 +1,10 @@
-// screens/HomeScreen/HomeScreen.jsx
+// components/DashboardComponents/HomeScreen.jsx
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useHomeScreen } from '../../hooks';
+import { useFavorites } from '../../hooks';  // ✅ ADD THIS
 import { notificationService } from '../../services/notificationService';
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
@@ -30,6 +31,14 @@ const HomeScreen = () => {
     openImageModal,
   } = useHomeScreen();
 
+  // ✅ ADD FAVORITES HOOK
+  const { 
+    favorites, 
+    fetchFavorites, 
+    toggleFavorite, 
+    isFavorite 
+  } = useFavorites();
+
   const [unreadCount, setUnreadCount] = useState(0);
 
   const fetchUnreadCount = async () => {
@@ -51,21 +60,34 @@ const HomeScreen = () => {
 
   useEffect(() => {
     fetchUnreadCount();
+    fetchFavorites(); // ✅ LOAD FAVORITES ON MOUNT
   }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       fetchUnreadCount();
+      fetchFavorites(); // ✅ REFRESH FAVORITES ON SCREEN FOCUS
     });
 
     return unsubscribe;
   }, [navigation]);
 
-  // ✅ CUSTOM REFRESH HANDLER (includes badge refresh)
+  // ✅ HANDLER FOR TOGGLE FAVORITE
+  const handleToggleFavorite = async (service, style) => {
+    const result = await toggleFavorite(service, style);
+    if (result.success) {
+      console.log(result.message);
+    } else {
+      console.error(result.message);
+    }
+  };
+
+  // ✅ CUSTOM REFRESH HANDLER (includes favorites + badge refresh)
   const handleRefresh = async () => {
     await Promise.all([
-      onRefresh(), // Original refresh (bookings, etc.)
-      fetchUnreadCount() // Refresh badge count
+      onRefresh(),
+      fetchUnreadCount(),
+      fetchFavorites() // ✅ REFRESH FAVORITES
     ]);
   };
 
@@ -86,14 +108,18 @@ const HomeScreen = () => {
           onImagePress={openImageModal}
           userObj={userObj}
           refreshing={refreshing}
-          onRefresh={handleRefresh} // ✅ Use new handler
+          onRefresh={handleRefresh}
           unreadCount={unreadCount}
+          isFavorite={isFavorite}
+          onToggleFavorite={handleToggleFavorite}
         />
       ) : (
         <SearchResults
           filteredStyles={filteredStyles}
           loading={loading}
           onImagePress={openImageModal}
+          isFavorite={isFavorite}
+          onToggleFavorite={handleToggleFavorite}
         />
       )}
 
