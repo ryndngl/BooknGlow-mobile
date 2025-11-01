@@ -28,6 +28,22 @@ export function FavoriteCard({
   const rawImageSource = item.image || (Array.isArray(item.images) ? item.images[0] : null);
   const imageSource = getImageSource(rawImageSource);
 
+  const service = item?.service || { name: item?.serviceName || "Service", _id: null };
+  
+  const handleToggle = () => {
+    if (!service.name || !item?.name) {
+      console.error("Missing service or item name:", { service, item });
+      return;
+    }
+    
+    console.log("Toggling favorite:", {
+      serviceName: service.name,
+      styleName: item.name
+    });
+    
+    onToggleFavorite(service, item);
+  };
+
   return (
     <View style={styles.card}>
       <Pressable onPress={() => onImagePress(imageSource)}>
@@ -45,24 +61,25 @@ export function FavoriteCard({
       <View style={styles.cardContent}>
         <View style={styles.serviceBadge}>
           <Text style={styles.serviceBadgeText}>
-            {item?.service?.name}
+            {service.name}
           </Text>
         </View>
 
         <View style={styles.namePriceRow}>
-          <Text style={styles.styleName}>{item?.name}</Text>
-          <Text style={styles.price}>
-            {item?.price?.toString().startsWith('₱') ? item.price : `₱${item.price}`}
-          </Text>
+          <Text style={styles.styleName} numberOfLines={1}>{item?.name}</Text>
         </View>
+        
+        <Text style={styles.price}>
+          {item?.price?.toString().startsWith('₱') ? item.price : `₱${item.price}`}
+        </Text>
 
         {item?.description && (
-          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.description} numberOfLines={2}>{item.description}</Text>
         )}
 
         <View style={styles.bottomRow}>
           <Pressable
-            onPress={() => onToggleFavorite(item.service, item)}
+            onPress={handleToggle}
             style={({ pressed }) => [
               styles.heartWrapper,
               { opacity: pressed ? 0.6 : 1 },
@@ -70,7 +87,7 @@ export function FavoriteCard({
           >
             <Ionicons
               name={isFavorite ? "heart" : "heart-outline"}
-              size={24}
+              size={22}
               color={isFavorite ? "red" : "#555"}
             />
           </Pressable>
@@ -87,9 +104,8 @@ export function FavoriteCard({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#ffffff",
-    borderRadius: 16,
-    marginTop: 20,
-    marginBottom: 20,
+    borderRadius: 12,  
+    marginBottom: 16,  
     width: cardWidth,
     overflow: "hidden",
     elevation: 3,
@@ -117,7 +133,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   cardContent: {
-    padding: 12,
+    padding: 10,  
     flex: 1,
     justifyContent: "space-between",
   },
@@ -127,60 +143,56 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
-    marginBottom: 8,
+    marginBottom: 6,  
   },
   serviceBadgeText: {
     color: "#fff",
-    fontSize: 10,
+    fontSize: 9,  
     fontWeight: "600",
     textTransform: "uppercase",
   },
   namePriceRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 4,
-    marginBottom: 6,
+    marginTop: 2,  
+    marginBottom: 4,  
   },
   styleName: {
-    fontSize: 15,
+    fontSize: 14,  
     fontWeight: "600",
     color: "#1a1a1a",
-    flex: 1,
   },
   price: {
-    fontSize: 14,
+    fontSize: 13, 
     fontWeight: "700",
     color: "#d10000",
+    marginBottom: 6,  
   },
   description: {
-    fontSize: 13,
+    fontSize: 12, 
     color: "#555",
-    marginTop: 4,
-    marginBottom: 10,
-    lineHeight: 18,
+    marginBottom: 8,  
+    lineHeight: 16,  
   },
   bottomRow: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
-    gap: 12,
+    marginTop: 8, 
+    gap: 10,  
   },
   heartWrapper: {
-    padding: 8,
+    padding: 6,  
     backgroundColor: "rgba(0,0,0,0.02)",
     borderRadius: 20,
   },
   bookNowButton: {
     backgroundColor: "#007d3f",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: 7,  
+    paddingHorizontal: 14,  
     borderRadius: 20,
   },
   bookNowText: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 11,  
     fontWeight: "600",
     textTransform: "uppercase",
   },
