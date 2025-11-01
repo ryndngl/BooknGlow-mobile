@@ -372,7 +372,6 @@ const AppContent = () => {
             if (state) {
               const currentRoute = state.routes[state.index];
               if (currentRoute.params) {
-                console.log("Route params:", currentRoute.params);
               }
             }
           }}
