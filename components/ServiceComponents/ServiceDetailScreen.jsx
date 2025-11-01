@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, RefreshControl } from 'react-native'; // ✅ ADD RefreshControl
+import { View, ScrollView, StyleSheet, RefreshControl } from 'react-native'; 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Import custom hook
