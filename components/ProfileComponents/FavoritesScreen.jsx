@@ -1,130 +1,156 @@
-import React, { useEffect } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
-import { useFavorites } from "../../context/FavoritesContext";
-import { useNavigation } from "@react-navigation/native";
-
-// I-change to NAMED IMPORTS (with curly braces)
-import { FavoritesHeader } from "./FavoritesHeader";
-import { EmptyFavoritesView } from "./EmptyFavoritesView";
-import { FavoriteCard } from "./FavoriteCard";
-import { FavoriteFullWidthCard } from "./FavoriteFullWidthCard";
-import { ImageModal } from "./ImageModal";
-
-// Hooks - From hooks folder
-import { useImageModal, useFavoritesData } from "../../hooks";
+// components/ProfileComponents/FavoritesScreen.jsx
+import React, { useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, RefreshControl, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { useFavorites } from '../../hooks';
+import { FavoritesHeader } from './FavoritesHeader';
+import { FavoriteCard } from './FavoriteCard'; 
 
 export default function FavoritesScreen() {
   const navigation = useNavigation();
-  const { favorites, toggleFavorite, isFavorite, clearFavorites, count } = useFavorites();
+  const { 
+    favorites, 
+    loading, 
+    fetchFavorites, 
+    toggleFavorite, 
+    clearAllFavorites,
+    isFavorite
+  } = useFavorites();
 
-  // Custom hooks
-  const { modalVisible, selectedImage, openImageModal, closeImageModal } = useImageModal();
-  const { multiImageFavorites, singleImageFavorites, handleClearAll } = useFavoritesData(
-    favorites,
-    clearFavorites,
-    count
-  );
-
-  // DEBUG: Log favorites data structure
   useEffect(() => {
-    if (favorites && favorites.length > 0) {
-      favorites.forEach((fav, index) => {});
+    fetchFavorites();
+  }, []);
+
+  const handleToggleFavorite = async (service, style) => {
+    await toggleFavorite(service, style);
+  };
+
+  const handleClearAll = () => {
+    if (favorites.length === 0) {
+      Alert.alert("No Favorites", "You don't have any favorites to clear.");
+      return;
     }
-  }, [favorites, count]);
 
-  const isEmpty = !favorites || favorites.length === 0;
+    Alert.alert(
+      "Clear All Favorites",
+      "Are you sure you want to delete all your favorites? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete All",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const result = await clearAllFavorites();
+              if (result.success) {
+                Alert.alert("Success", "All favorites have been cleared.");
+              } else {
+                Alert.alert("Error", "Failed to clear favorites. Please try again.");
+              }
+            } catch (error) {
+              console.error("Error clearing favorites:", error);
+              Alert.alert("Error", "An unexpected error occurred.");
+            }
+          },
+        },
+      ]
+    );
+  };
 
-  // Handle navigation to booking
+  const handleImagePress = (image) => {
+    console.log('Image pressed:', image);
+  };
+
   const handleBookPress = (item) => {
-    navigation.navigate("BookingFormScreen", {
+    navigation.navigate('BookingFormScreen', {
       serviceName: item.service?.name,
       styleName: item.name,
       stylePrice: item.price,
     });
   };
 
-  if (isEmpty) {
+  const renderItem = ({ item }) => {
     return (
-      <View style={styles.emptyContainer}>
-        <FavoritesHeader
-          onBackPress={() => navigation.goBack()}
-          onClearAll={handleClearAll}
-          favoritesCount={count}
-          isEmpty={true}
-        />
-        <EmptyFavoritesView />
-      </View>
+      <FavoriteCard
+        item={item}
+        isFavorite={isFavorite(item.service, item)}
+        onToggleFavorite={handleToggleFavorite}
+        onImagePress={handleImagePress}
+        onBookPress={() => handleBookPress(item)}
+      />
     );
-  }
+  };
+
+  const renderEmpty = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>No favorites yet</Text>
+      <Text style={styles.emptySubtext}>
+        Add items to your favorites to see them here
+      </Text>
+    </View>
+  );
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <FavoritesHeader
         onBackPress={() => navigation.goBack()}
         onClearAll={handleClearAll}
-        favoritesCount={count}
-        isEmpty={false}
+        favoritesCount={favorites.length}
+        isEmpty={favorites.length === 0}
       />
 
-      <ScrollView contentContainerStyle={styles.container}>
-        {/* Multi-image favorites (Foot Spa Package) - full width cards */}
-        {multiImageFavorites.map((item, index) => {
-          const favorite = isFavorite(item?.service?.name, item?.name);
-          return (
-            <FavoriteFullWidthCard
-              key={`multi-${index}`}
-              item={item}
-              isFavorite={favorite}
-              onToggleFavorite={toggleFavorite}
-              onImagePress={openImageModal}
-              onBookPress={() => handleBookPress(item)}
-            />
-          );
-        })}
-
-        {/* Single image favorites (Manicure, Pedicure, etc) - grid cards */}
-        <View style={styles.grid}>
-          {singleImageFavorites.map((item, index) => {
-            const favorite = isFavorite(item?.service?.name, item?.name);
-            return (
-              <FavoriteCard
-                key={`single-${index}`}
-                item={item}
-                isFavorite={favorite}
-                onToggleFavorite={toggleFavorite}
-                onImagePress={openImageModal}
-                onBookPress={() => handleBookPress(item)}
-              />
-            );
-          })}
-        </View>
-      </ScrollView>
-
-      <ImageModal
-        visible={modalVisible}
-        imageSource={selectedImage}
-        onClose={closeImageModal}
+      <FlatList
+        data={favorites}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => item._id || `fav-${index}`}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
+        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={renderEmpty}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={fetchFavorites}
+            colors={['#7a0000']}
+            tintColor="#7a0000"
+          />
+        }
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  listContent: {
+    padding: 16,
+    paddingBottom: 100,
+  },
+  row: {
+    justifyContent: 'space-between',
+  },
   emptyContainer: {
     flex: 1,
-    backgroundColor: "#fff",
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
   },
-  container: {
-    paddingTop: 3,
-    paddingHorizontal: 16,
-    paddingBottom: 20,
+  emptyText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#666',
+    marginBottom: 8,
   },
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    paddingBottom: 10,
+  emptySubtext: {
+    fontSize: 14,
+    color: '#999',
+    textAlign: 'center',
   },
 });
-
-      
