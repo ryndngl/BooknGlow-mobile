@@ -4,11 +4,13 @@ import { FlatList, Text, View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import BigServiceCard from '../cards/BigServiceCard'
 
-const SearchResults = ({ filteredStyles, loading, onImagePress }) => {
+const SearchResults = ({ filteredStyles, loading, onImagePress, isFavorite, onToggleFavorite }) => {
   const navigation = useNavigation();
 
   const renderItem = ({ item }) => {
     const isFootSpa = item.serviceName?.toLowerCase().includes("foot spa");
+    const service = { name: item.serviceName, _id: item.serviceId };
+    
     return (
       <BigServiceCard
         serviceName={item.serviceName}
@@ -23,6 +25,8 @@ const SearchResults = ({ filteredStyles, loading, onImagePress }) => {
         }
         isFootSpa={isFootSpa}
         searchCard={true}
+        isFavorite={isFavorite(service, item)}
+        onToggleFavorite={() => onToggleFavorite(service, item)}
       />
     );
   };
