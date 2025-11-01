@@ -35,7 +35,7 @@
       "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/vans-glow-up-salon.png",
-        "backgroundColor": "#FF4444",
+        "backgroundColor": "#FFFFFF",
         "monochromeImage": "./assets/vans-glow-up-salon.png"
       },
       "intentFilters": [
@@ -59,6 +59,14 @@
       "eas": {
         "projectId": "bccae9f8-5b26-4737-ac4d-9bdcbc8aa128"
       }
+    },
+    "updates": {
+      "enabled": false,
+      "checkAutomatically": "ON_ERROR_RECOVERY",
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }

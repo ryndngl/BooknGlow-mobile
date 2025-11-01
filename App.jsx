@@ -7,7 +7,6 @@ import {
   StatusBar,
   LogBox,
   View,
-  Text,
   ActivityIndicator,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -62,7 +61,7 @@ import {
   ContactUsScreen,
 } from "./components";
 
-// NEW: Import PastBookingsScreen
+// Import PastBookingsScreen
 import PastBookingsScreen from "./components/ProfileComponents/PastBookingsScreen";
 
 // Top-level Navigators
@@ -71,7 +70,6 @@ import BottomTabNavigator from "./navigation/BottomTabNavigator";
 const Stack = createNativeStackNavigator();
 const { width, height } = Dimensions.get("window");
 
-// ✅ FIXED: Removed :19000 port
 const linking = {
   prefixes: [
     "salonmobileapp://",
@@ -109,13 +107,13 @@ const linking = {
   },
 };
 
-// ✅ NEW: Server Wake-up Function
+// Server Wake-up Function (runs silently in background)
 const wakeUpServer = async () => {
   const API_URL = "https://salon-app-server.onrender.com";
   try {
     console.log("🚀 Waking up server...");
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     
     const response = await fetch(`${API_URL}/api/health`, {
       method: "GET",
@@ -169,8 +167,7 @@ const AuthNavigator = () => {
     };
   }, []);
 
-  // ✅ REMOVED: Duplicate splash screen from here
-  // Just handle the logout splash animation
+  // Handle logout splash animation
   useEffect(() => {
     if (showSplashOnLogout) {
       splashFadeOut.setValue(1);
@@ -314,25 +311,21 @@ const AuthNavigator = () => {
   );
 };
 
-// ✅ OPTIMIZED: Main App Component with Single Splash & Server Wake-up
+// Main App Component - CLEAN SPLASH (No loading text messages)
 const AppContent = () => {
   const [isAppReady, setIsAppReady] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState("Initializing...");
   const splashFadeOut = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        // Step 1: Wake up server (most important!)
-        setLoadingProgress("Connecting to server...");
+        // Wake up server silently in background
         await wakeUpServer();
         
-        // Step 2: Small delay for smooth transition
-        setLoadingProgress("Loading app...");
+        // Small delay for smooth transition
         await new Promise(resolve => setTimeout(resolve, 500));
         
-        // Step 3: Fade out splash
-        setLoadingProgress("Almost ready...");
+        // Fade out splash screen
         Animated.timing(splashFadeOut, {
           toValue: 0,
           duration: 600,
@@ -360,10 +353,9 @@ const AppContent = () => {
           style={styles.backgroundImage}
           imageStyle={styles.backgroundImageStyle}
         >
-          {/* ✅ Added loading indicator */}
+          {/* Clean loading indicator - NO TEXT MESSAGES */}
           <View style={styles.loadingIndicator}>
             <ActivityIndicator size="large" color="#FF6B6B" />
-            <Text style={styles.loadingText}>{loadingProgress}</Text>
           </View>
         </ImageBackground>
       </Animated.View>
@@ -426,16 +418,9 @@ const styles = StyleSheet.create({
   backgroundImageStyle: {
     resizeMode: "cover",
   },
-  // ✅ NEW: Loading indicator styles
   loadingIndicator: {
     position: "absolute",
     bottom: 100,
     alignItems: "center",
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "500",
   },
 });
