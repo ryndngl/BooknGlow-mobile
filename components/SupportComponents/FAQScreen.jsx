@@ -34,10 +34,6 @@ export default function FAQScreen({ navigation }) {
           question: "What if I'm running late?",
           answer: "Please call the salon immediately if you're running late. We can hold your appointment for up to 15 minutes. If you're more than 15 minutes late, we may need to accommodate other clients."
         },
-        {
-          question: "Can I book multiple services at once?",
-          answer: "Absolutely! You can add multiple services to your booking:\n\n• Select your first service\n• Tap 'Add Another Service' before checkout\n• Choose additional treatments\n\nThe app will automatically calculate the total time and price for your combined services."
-        }
       ]
     },
     {
