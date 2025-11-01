@@ -5,6 +5,7 @@ export { useApi } from './useApi';
 // HomeScreen hooks
 export { useHomeScreen } from './useHomeScreen';
 export { useTestimonials } from './useTestimonials';
+export { useFavorites } from './useFavorites';
 
 // AuthComponents hooks
 export { useLoginAnimation } from './useLoginAnimation';
@@ -30,4 +31,4 @@ export { useLogoutFlow } from './useLogoutFlow';
 
 // FavoritesScreen hooks
 export { useImageModal } from './useImageModal';
-export { useFavoritesData } from './useFavoritesData';
+
