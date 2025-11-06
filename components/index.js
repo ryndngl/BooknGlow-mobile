@@ -6,4 +6,3 @@ export * from './PaymentComponents';
 export * from './ProfileComponents';
 export * from './ServiceComponents';
 export * from './SupportComponents';
-export * from './cards';
