@@ -2,12 +2,11 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
-import { useBooking } from '../context/BookingContext'; // ✅ IMPORT BookingContext
-
+import { useBooking } from '../context/BookingContext'; 
 export const useLoginForm = () => {
   const navigation = useNavigation();
   const { login, setUser, setIsAuthenticated } = useAuth();
-  const { fetchUserBookings } = useBooking(); // ✅ Get fetchUserBookings function
+  const { fetchUserBookings } = useBooking(); 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
