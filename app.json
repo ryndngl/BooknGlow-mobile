@@ -6,11 +6,11 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "scheme": "booknglow",
-    "icon": "./assets/vans-glow-up-salon.png",
+    "icon": "./assets/icon-with-padding.png",
     "splash": {
-      "image": "./assets/vans-glow-up-salon.png",
+      "image": "./assets/icon-with-padding.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FF4444"
+      "backgroundColor": "#8B1A1A"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -31,12 +31,11 @@
     },
     "android": {
       "package": "com.glowup.booknglow",
-      "versionCode": 1,
+      "versionCode": 2,
       "usesCleartextTraffic": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/vans-glow-up-salon.png",
-        "backgroundColor": "#FFFFFF",
-        "monochromeImage": "./assets/vans-glow-up-salon.png"
+        "foregroundImage": "./assets/adaptive-icon-foreground.png",
+        "backgroundColor": "#FFFFFF"
       },
       "intentFilters": [
         {
@@ -52,7 +51,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/vans-glow-up-salon.png"
+      "favicon": "./assets/icon.png"
     },
     "plugins": [],
     "extra": {
