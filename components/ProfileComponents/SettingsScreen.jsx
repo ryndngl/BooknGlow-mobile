@@ -13,8 +13,7 @@ export default function SettingsScreen() {
       title: 'Notifications & Settings',
       items: [
         { icon: 'notifications', label: 'Booking Reminders', hasSwitch: true, value: bookingReminders, onChange: setBookingReminders },
-        { icon: 'local-offer', label: 'Promos & Offers', hasSwitch: true, value: promos, onChange: setPromos },
-        { icon: 'lock', label: 'Change Password', hasAction: true, onPress: () => {} } // Maaari kang magdagdag ng function para mag-navigate sa isang Change Password screen
+        { icon: 'local-offer', label: 'Promos & Offers', hasSwitch: true, value: promos, onChange: setPromos }
       ]
     },
     {
