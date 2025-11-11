@@ -1,4 +1,4 @@
-// AuthContext.js - FIXED: Removed aggressive auto-logout
+// AuthContext.js - FIXED: Update user in backend + MediaType warning
 import { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FavoritesMigrationHelper } from "../utils/FavoritesMigrationHelper";
@@ -232,16 +232,56 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Update user data
+  // FIXED: Update user data - now saves to backend too
   const updateUser = async (newUserData) => {
     try {
-      const updatedUser = { ...user, ...newUserData };
+      const token = await AsyncStorage.getItem("token");
+      const userId = user?.id || user?._id;
+      
+      if (!token || !userId) {
+        throw new Error("No authentication token or user ID found");
+      }
+
+      // Send update to backend
+      const response = await fetch(`${API_URL}/api/users/${userId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newUserData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update user");
+      }
+
+      const responseData = await response.json();
+      
+      // Update local storage and state
+      const updatedUser = { 
+        ...user, 
+        ...newUserData,
+        // Use backend response if available
+        ...(responseData.user || {})
+      };
+      
       await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
       setUser(updatedUser);
-      return { success: true };
+      
+      return { success: true, user: updatedUser };
     } catch (error) {
-      console.error("Update user error:", error);
-      throw error;
+      
+      // Fallback: save locally if backend fails (offline support)
+      try {
+        const updatedUser = { ...user, ...newUserData };
+        await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+        setUser(updatedUser);
+        return { success: true, user: updatedUser, offline: true };
+      } catch (localError) {
+        throw error;
+      }
     }
   };
 
@@ -249,14 +289,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     checkAuthStatus();
   }, []);
-
-  // 🔥 REMOVED: Auto-refresh interval
-  // For salon booking app without sensitive data, we trust the token until expiry (30 days)
-  // This prevents random logouts due to network issues and improves UX
-  // Token validation happens only on:
-  // 1. App startup
-  // 2. Manual login
-  // 3. Explicit user actions requiring auth
 
   const value = {
     user,
