@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet, Alert } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useCallback } from "react";
@@ -50,12 +50,12 @@ export default function ProfileScreen() {
     handleLogout,
   } = useLogoutFlow(logout, setShowSplashOnLogout, setUser, setDataLoaded);
 
-  // ✅ Fetch favorites on mount
+  //  Fetch favorites on mount
   useEffect(() => {
     fetchFavorites();
   }, []);
 
-  // ✅ Refresh favorites when screen comes into focus
+  //  Refresh favorites when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       fetchFavorites();
@@ -64,6 +64,18 @@ export default function ProfileScreen() {
 
   const handlePastBookingsPress = () => {
     navigation.navigate("PastBookingsScreen");
+  };
+
+  const handlePhotoUpdate = async (photoUrl) => {
+    try {
+      const updatedUser = { ...user, photo: photoUrl };
+      await updateUser(updatedUser);
+      setUser(updatedUser);
+      Alert.alert("Success", "Profile photo updated!");
+    } catch (error) {
+      console.error('Photo update error:', error);
+      Alert.alert("Error", "Failed to update profile photo. Please try again.");
+    }
   };
 
   return (
@@ -85,6 +97,7 @@ export default function ProfileScreen() {
             onNameChange={handleNameChange}
             onPhoneChange={handlePhoneChange}
             onEditPress={handleEditPress}
+            onPhotoUpdate={handlePhotoUpdate}
           />
 
           <View style={styles.menuContainer}>
