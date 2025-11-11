@@ -1,13 +1,73 @@
-import { View, Text, TouchableOpacity, Image, TextInput, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, Image, TextInput, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import * as ImagePicker from 'expo-image-picker';
+import { useState } from 'react';
 
 export default function ProfileCard({ 
   user, 
   editing,
   onNameChange,
   onPhoneChange,
-  onEditPress 
+  onEditPress,
+  onPhotoUpdate
 }) {
+  const [uploading, setUploading] = useState(false);
+
+  const pickImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (permissionResult.granted === false) {
+      Alert.alert("Permission Required", "Allow access to your photos to upload a profile picture.");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      uploadToCloudinary(result.assets[0].uri);
+    }
+  };
+
+  const uploadToCloudinary = async (uri) => {
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', {
+        uri: uri,
+        type: 'image/jpeg',
+        name: 'profile.jpg',
+      });
+      formData.append('upload_preset', 'salon_styles'); // Change to your preset name
+      formData.append('cloud_name', 'dyw0qxjzn');
+
+      const response = await fetch(
+        'https://api.cloudinary.com/v1_1/dyw0qxjzn/image/upload',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+      
+      if (data.secure_url) {
+        onPhotoUpdate(data.secure_url);
+      } else {
+        Alert.alert("Upload Failed", "Could not upload image. Please try again.");
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      Alert.alert("Error", "An error occurred while uploading. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <View style={styles.profileCard}>
       <View style={styles.profileHeader}>
@@ -19,9 +79,17 @@ export default function ProfileCard({
               <Icon name="person" size={40} color="#999" />
             </View>
           )}
-          <View style={styles.cameraIcon}>
-            <Icon name="camera-alt" size={12} color="#fff" />
-          </View>
+          <TouchableOpacity 
+            style={styles.cameraIcon} 
+            onPress={pickImage}
+            disabled={uploading}
+          >
+            {uploading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Icon name="camera-alt" size={12} color="#fff" />
+            )}
+          </TouchableOpacity>
         </View>
         <View style={styles.profileInfo}>
           {editing ? (
@@ -84,9 +152,9 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 95,
+    height: 95,
+    borderRadius: 47.5,
   },
   placeholderCircle: {
     width: 95,
